@@ -1,33 +1,49 @@
-require('dotenv').config();
-const express = require('express');
-const app = express();
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const users = require('./routes/users.js');
-const cards = require('./routes/cards.js');
 
-const auth = require('./middlewares/auth');
+
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
-const NotFoundError = require('./errors/notFoundError.js');
-const NotAuthorizedError = require('./errors/notAuthorizedError');
+const helmet = require('helmet');
 const { celebrate, Joi } = require('celebrate');
-
-const { createUser, login } = require('./controllers/users');
-const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { PORT = 3000 } = process.env;
 const { errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
+require('dotenv').config();
+const app = express();
+const users = require('./routes/users.js');
+const cards = require('./routes/cards.js');
+const { createUser, login } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+const NotFoundError = require('./errors/notFoundError.js');
+const { PORT = 3000 } = process.env;
+
+app.use(helmet());
 
 app.use(cookieParser());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
+
+app.use(limiter);
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // подключаемся к серверу mongon
 mongoose.connect('mongodb://localhost:27017/mongodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
-  useFindAndModify: false
+  useFindAndModify: false,
+  useUnifiedTopology: true,
 });
 
-app.use(bodyParser.json());
+
+app.use(requestLogger); // подключаем логгер запросов
+
 
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -35,7 +51,7 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.use(requestLogger); // подключаем логгер запросов
+
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -56,30 +72,23 @@ app.use('/', auth, users);
 app.use('/', auth, cards);
 
 
-app.use(errorLogger); // подключаем логгер ошибок
-
-
-// celebrate errors handler
-app.use(errors());
-
 app.use(() => {
   throw new NotFoundError({ message: 'Запрашиваемый ресурс не найден' });
 });
 
-app.use((err, req, res, next) => {
-  // если у ошибки нет статуса, выставляем 500
-  const { statusCode = 500, message } = err;
+app.use(errorLogger);
 
-  res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message
-    });
+app.use(errors());
+
+app.use((err, req, res, next) => {
+  if (err.status) {
+    res.status(err.status).send(err.message);
+    return;
+  }
+  res.status(500).send({ message: `На сервере произошла ошибка: ${err.message}` });
+  next();
 });
 
 app.listen(PORT, () => {
-    console.log(`App listen on port ${PORT}`);
+  console.log(`App listening on port ${PORT}`);
 });

@@ -9,6 +9,7 @@ export const baseUrl = 'http://www.api.lera.students.nomoredomains.rocks';
 export const register = (password, email) => fetch(`${baseUrl}/signup`, {
   method: 'POST',
   headers: {
+    'Accept': 'application/json',
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({ password, email }),
@@ -32,6 +33,7 @@ export const register = (password, email) => fetch(`${baseUrl}/signup`, {
   export const authorize = (password, email) => fetch(`${baseUrl}/signin`, {
     method: 'POST',
     headers: {
+      'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ password, email }),
