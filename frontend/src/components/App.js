@@ -96,7 +96,7 @@ function App() {
   function handleLogin(password, email) {
     return  auth
     //  .authorize(escape(password), email)
-    .register(password, email)
+    .authorize(password, email)
       .then((data) => {
         auth
          .getContent(data)
