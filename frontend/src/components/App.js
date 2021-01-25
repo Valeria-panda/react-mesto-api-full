@@ -79,59 +79,36 @@ function App() {
     }
   }, [history]);
 
-  // Регистрация
-  // function handleRegister(password, email) {
-  //   auth.register(escape(password), email)
-  //     .then(() => {
-  //       setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
-  //       history.push('/sign-in');
-  //     })
-  //     .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
-  //   setInfoTooltipOpen(true);
-  // }
+  // // Регистрация
+  function handleRegister(password, email) {
+    auth.register(escape(password), email)
+      .then(() => {
+        setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
+        history.push('/sign-in');
+      })
+      .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
+    setInfoTooltipOpen(true);
+  }
 
-  // Авторизация
-  // function handleLogin(password, email) {
-  //   auth.authorize(escape(password), email)
-  //     .then((data) => {
-  //       auth.getContent(data)
-  //         .then((res) => {
-  //           setEmail(res.data.email);
-  //         })
-  //         .catch(err => console.log(err));
-  //       setLoggedIn(true);
-  //       setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
-  //       history.push('/');
-  //     })
-  //     .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))
-  //   setInfoTooltipOpen(true);
-  // }
- // Регистрация
- function handleRegister(password, email) {
-  auth.register(escape(password), email)
-    .then(() => {
-      setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
-    })
-    .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
-  setInfoTooltipOpen(true);
-}
-
-// Авторизация
-function handleLogin(password, email) {
-  auth.authorize(escape(password), email)
-    .then((data) => {
-      auth.getContent(data)
-        .then((res) => {
-          setEmail(res.data.email);
-        })
-        .catch(err => console.log(err));
-      setLoggedIn(true);
-      setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
-      history.push('/');
-    })
-    .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))
-  setInfoTooltipOpen(true);
-}
+  // // Авторизация
+  function handleLogin(password, email) {
+    return  auth
+     .authorize(escape(password), email)
+      .then((data) => {
+        auth
+         .getContent(data)
+          .then((res) => {
+            setEmail(res.data.email);
+          })
+          .catch(err => console.log(err));
+        setLoggedIn(true);
+        setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
+        history.push('/');
+      })
+      .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))
+    setInfoTooltipOpen(true);
+  }
+ 
   // Выход
   function handleSignOut() {
     setLoggedIn(false);

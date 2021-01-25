@@ -70,7 +70,7 @@ module.exports.login = (req, res, next) => {
           httpOnly: true,
           sameSite: true,
         })
-        .send(user);
+        .send({ message: 'Успешная авторизация' });
     })
     .catch(next);
 };
