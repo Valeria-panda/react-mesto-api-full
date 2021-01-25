@@ -1,10 +1,11 @@
 
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const { getUsers, getProfile, updateUser,  updateAvatar } = require('../controllers/users.js')
+const { getUsers, getProfile, updateUser,  updateAvatar, getCurrentUserInfo } = require('../controllers/users.js')
 const NotAuthorizedError = require('../errors/notAuthorizedError');
 
 router.get('/users', getUsers);// вернем всех пользователей
+router.get('/users/me', getCurrentUserInfo);
 
 
 router.get('/users/:_id', celebrate({
@@ -27,3 +28,8 @@ router.patch('/users/me/avatar', celebrate({
   }), updateAvatar); // обновим аватар пользователя
 
 module.exports = router;
+
+
+
+
+
