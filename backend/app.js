@@ -5,10 +5,12 @@ const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const helmet = require('helmet');
+// const helmet = require('helmet');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+
+const cors = require('cors');
 
 require('dotenv').config();
 const app = express();
@@ -19,7 +21,15 @@ const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/notFoundError.js');
 const { PORT = 3000 } = process.env;
 
-app.use(helmet());
+// app.use(helmet());
+const options = {
+  origin: [
+  'http://localhost:8080',
+  'https://api.advent.students.nomoredomains.rocks',
+  'https://https://github.com/Valeria-panda/react-mesto-api-full.git',
+  ],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],  preflightContinue: false,  optionsSuccessStatus: 204,  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],  credentials: true,};
+  app.use('*', cors(options));
 
 app.use(cookieParser());
 
