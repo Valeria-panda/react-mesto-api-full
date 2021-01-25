@@ -1,16 +1,16 @@
 
-
+const cors = require('cors');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-// const helmet = require('helmet');
+const helmet = require('helmet');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const cors = require('cors');
+
 
 require('dotenv').config();
 const app = express();
@@ -21,35 +21,28 @@ const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/notFoundError.js');
 const { PORT = 3000 } = process.env;
 
-// app.use(helmet());
-const options = {
-  origin: [
-  'http://localhost:8080',
-  'https://api.advent.students.nomoredomains.rocks',
-  'https://https://github.com/Valeria-panda/react-mesto-api-full.git',
-  ],
-  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],  preflightContinue: false,  optionsSuccessStatus: 204,  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],  credentials: true,};
-  app.use('*', cors(options));
-
+app.use(helmet());
 app.use(cookieParser());
-
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
+  message: 'Слишком много запросов с вашего IP, попробуйте повторить попытку позже',
 });
 
 app.use(limiter);
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// подключаемся к серверу mongo
+mongoose.connect('mongodb://localhost:27017/mestodb',
+  {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  });
 
-// подключаемся к серверу mongon
-mongoose.connect('mongodb://localhost:27017/mongodb', {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-  useUnifiedTopology: true,
-});
+
+
 
 
 app.use(requestLogger); // подключаем логгер запросов

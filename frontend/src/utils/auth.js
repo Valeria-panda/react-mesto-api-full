@@ -3,7 +3,7 @@ import NotAuthorizedError from '../errors/notAuthorizedError';
 // старый вариант
 // export const BASE_URL = 'https://auth.nomoreparties.co';
 
-export const BASE_URL = 'https://www.advent.students.nomoredomains.rocks';
+export const BASE_URL = 'https://www.api.advent.students.nomoredomains.rocks';
 
 // Отправляем запрос на регистрацию
 export const register = (password, email) => fetch(`${BASE_URL}/signup`, {
@@ -25,47 +25,35 @@ export const register = (password, email) => fetch(`${BASE_URL}/signup`, {
         });
     }
     return res.json();
-  });
+});
 
 
 
 // Отправляем запрос на авторизацию
-  export const authorize = (body) => {
-    return fetch(`${this.BASE_URL}/signin`, {      
-    method: 'POST',      
-    headers: this.headers,      
-    credentials: 'include',      
-    body: JSON.stringify(body),    
-    })
-    .then((res) => this._getResolve(res))      
-    .catch((err) => { throw err });  
-  }
+export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ password, email }),
+})
+  .then((res) => {
+    if (res.status === 400) {
+      throw new BadRequestError('Не передано одно из полей');
+    }
+    else if (res.status === 401) {
+      throw new NotAuthorizedError('Пользователь с таким email не найден');
+    }
+    return res.json();
+  })
+  .then((data) => {
+    if (data.token) {
+      localStorage.setItem('jwt', data.token);
+      return data.token;
+    }
+  });
 
 
-
-
-// export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
-//   method: 'POST',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-//   body: JSON.stringify({ password, email }),
-// })
-//   .then((res) => {
-//     if (res.status === 400) {
-//       throw new BadRequestError('Не передано одно из полей');
-//     }
-//     else if (res.status === 401) {
-//       throw new NotAuthorizedError('Пользователь с таким email не найден');
-//     }
-//     return res.json();
-//   })
-//   .then((data) => {
-//     if (data.token) {
-//       localStorage.setItem('jwt', data.token);
-//       return data.token;
-//     }
-//   });
 
 // Отправляем запрос на получение токена
 export const getContent = (token) => fetch(`${BASE_URL}/users/me`, {
