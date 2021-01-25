@@ -1,11 +1,11 @@
 
 const cors = require('cors');
 const express = require('express');
-const cookieParser = require('cookie-parser');
-const rateLimit = require('express-rate-limit');
+// const cookieParser = require('cookie-parser');
+// const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const helmet = require('helmet');
+// const helmet = require('helmet');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -21,17 +21,21 @@ const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/notFoundError.js');
 const { PORT = 3000 } = process.env;
 
-app.use(helmet());
-app.use(cookieParser());
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: 'Слишком много запросов с вашего IP, попробуйте повторить попытку позже',
-});
 
-app.use(limiter);
+
+
+// app.use(helmet());
+// app.use(cookieParser());
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 100,
+//   message: 'Слишком много запросов с вашего IP, попробуйте повторить попытку позже',
+// });
+
+// app.use(limiter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://localhost:27017/mestodb',
   {

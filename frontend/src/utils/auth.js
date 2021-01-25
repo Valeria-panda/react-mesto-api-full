@@ -3,7 +3,7 @@ import NotAuthorizedError from '../errors/notAuthorizedError';
 // старый вариант
 // export const BASE_URL = 'https://auth.nomoreparties.co';
 
-export const BASE_URL = 'https://www.api.advent.students.nomoredomains.rocks';
+export const BASE_URL = 'https://api.advent.students.nomoredomains.rocks';
 
 // Отправляем запрос на регистрацию
 export const register = (password, email) => fetch(`${BASE_URL}/signup`, {
@@ -26,8 +26,6 @@ export const register = (password, email) => fetch(`${BASE_URL}/signup`, {
     }
     return res.json();
 });
-
-
 
 // Отправляем запрос на авторизацию
 export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
