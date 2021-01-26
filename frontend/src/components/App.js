@@ -89,7 +89,7 @@ function App() {
         history.push('/sign-in');
       })
       .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
-    setInfoTooltipOpen(true);
+       setInfoTooltipOpen(true);
   }
 
   // // Авторизация
@@ -108,8 +108,8 @@ function App() {
         setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
         history.push('/');
       })
-      .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))
-    setInfoTooltipOpen(true);
+      .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
+       setInfoTooltipOpen(true);
   }
  
   // Выход

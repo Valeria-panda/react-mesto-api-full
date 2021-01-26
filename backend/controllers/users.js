@@ -4,21 +4,20 @@ const jwt = require('jsonwebtoken');
 const BadRequestError = require('../errors/badRequestError');
 const NotFoundError = require('../errors/notFoundError');
 const AlreadyExistError = require('../errors/alreadyExistError');
-
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send(users))
-    .catch(next);
-};
+  .then((users) => res.send({ data: users }))
+  .catch(next);
+}
 
 module.exports.getProfile = (req, res, next) => {
   User.findOne({ _id: req.params.userId })
   .then((user) => {
     if (!user) {
       // если такого пользователя нет
-      throw new NotFoundError({ message: 'Нет пользователя с таким id' });
+      throw new NotFoundError('Нет пользователя с таким id');
     }
     res.send(user);
   })
@@ -26,75 +25,54 @@ module.exports.getProfile = (req, res, next) => {
 }
 
 module.exports.createUser = (req, res, next) => {
-  const { name, about, email, password, avatar } = req.body;
-    User.findOne({ email })
-    .then((user) => {
-      if (user) {
-        throw new AlreadyExistError('Пользователь с таким email уже существует');
-      }
 
-      bcrypt.hash(password, 10)
-        .then((hash) => User.create({
-          name,
-          about,
-          avatar,
-          email,
-          password: hash,
-        }))
-        .then((createUser) => {
-          if (!createUser) {
-            throw new BadRequestError('Переданы некорректные данные');
-          }
+  const { name, about, email, password } = req.body;
 
-          User.findOne({ email })
-          .then((user) => res.send(user));
-      });
-  })
-  .catch(next);
+  bcrypt.hash(password, 10)
+    .then( hash => User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash, // записываем хеш в базу
+    }))
+
+    .catch((err) => {
+      if (err.name === 'MongoError' || err.code === 11000) {
+        throw new AlreadyExistError({ message: 'Пользователь с таким email уже зарегистрирован' });
+      } else next(err);
+    })
+
+    .then((user) => res.status(201).send({
+      data: {
+        name: user.name, about: user.about, avatar, email: user.email,
+      },
+    }))
+
+    .catch(next);
+
 };
-
-// module.exports.login = (req, res, next) => {
-//   const { email, password } = req.body;
-
-//   return User.findUserByCredentials(email, password)
-//     .then((user) => {
-//       const token = jwt.sign(
-//         { _id: user._id },
-//         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-//         { expiresIn: '7d' },
-//       );
-//       res
-//         .cookie('jwt', token, {
-//           maxAge: 3600000 * 24 * 7,
-//           httpOnly: true,
-//           sameSite: true,
-//         })
-//         .send({ message: 'Успешная авторизация' });
-//     })
-//     .catch(next);
-// };
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-
-      User.findOne({ email })
-        .then((user) => res.cookie('jwt', token, {
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
           httpOnly: true,
           sameSite: true,
-          maxAge: (3600 * 24 * 7),
         })
-          .send(user));
+        .send({ message: 'Успешная авторизация' });
     })
     .catch(next);
-  };
+};
 
 module.exports.updateUser = (req, res, next) => {
   const { name, about} = req.body;

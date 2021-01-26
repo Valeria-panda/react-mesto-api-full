@@ -3,7 +3,7 @@ import NotAuthorizedError from '../errors/notAuthorizedError';
 // старый вариант
 // export const BASE_URL = 'https://auth.nomoreparties.co';
 
-export const BASE_URL = 'https://api.advent.students.nomoredomains.rocks';
+export const BASE_URL = 'https://www.api.advent.students.nomoredomains.rocks';
 
 
 
