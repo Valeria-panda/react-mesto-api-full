@@ -126,7 +126,7 @@ function App() {
   }
 
   React.useEffect(() => {
-    api.getUserInfo()
+    auth.getUserInfo()
       .then((user) => {
         setLoggedIn(true);
         setCurrentUser(user);
@@ -137,7 +137,7 @@ function App() {
 
   React.useEffect(() => {
     if (loggedIn) {
-      api.getInitialCards()
+      auth.getInitialCards()
         .then((initialCards) => setCards(initialCards.reverse()))
         .catch((err) => console.log(err));
       }
@@ -166,11 +166,19 @@ function App() {
   // }
  
   // Выход
+  // function handleSignOut() {
+  //   setLoggedIn(false);
+  //   localStorage.removeItem('jwt');
+  //   setEmail('');
+  //   history.push('/sign-in');
+  // }
   function handleSignOut() {
-    setLoggedIn(false);
-    localStorage.removeItem('jwt');
-    setEmail('');
-    history.push('/sign-in');
+    auth.signout()
+      .then(() => {
+        setLoggedIn(false);
+        setCurrentUser({});
+      })
+      .catch((err) => console.log(err));
   }
 
   // //данные о текущем пользователе
@@ -206,7 +214,7 @@ function App() {
     // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some(i => i._id === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api
+    auth
       .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
         // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
@@ -220,7 +228,7 @@ function App() {
   } 
    //Удалить карточку после подтверждения
    function handleConfirm() {
-    api
+    auth
       .deleteCard(cardToDelete._id)
       .then(() =>{
         setCards(cards.filter((item) => item !== cardToDelete))
@@ -246,7 +254,7 @@ function App() {
   //Обновить аватар
   function handleUpdateAvatar(newAvatar) {
       setLoading(true);
-      api
+      auth
         .setUserAvatar(newAvatar)
         .then((res) => {
           setCurrentUser(res);
@@ -259,7 +267,7 @@ function App() {
   //Обновить данные пользователя
   function handleUpdateUser(userData) {
       setLoading(true);
-      api
+      auth
         .updateUserInfo(userData)
         .then((newUser) => {
           setCurrentUser(newUser);
@@ -271,7 +279,7 @@ function App() {
   }
   //Получить данные карточек с фото
   React.useEffect(() => {
-      api
+    auth
         .getInitialCards()
         .then((cardData) => {
           setCards(cardData);
@@ -281,7 +289,7 @@ function App() {
   
   function handleAddPlace(card) {
       setLoading(true);
-      api
+      auth
         .postNewCard(card)
         .then((newCard) => {
           setCards([newCard, ...cards]);
