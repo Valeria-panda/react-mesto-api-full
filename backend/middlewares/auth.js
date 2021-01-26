@@ -1,26 +1,17 @@
-
 const jwt = require('jsonwebtoken');
-const NotAuthorizedError = require('../errors/notAuthorizedError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
+
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const auth = (req, res, next) => {
-  if (!req.cookies.jwt) {
-    throw new NotAuthorizedError('Токен не передан или передан не в том формате');
-  }
-
+module.exports = (req, res, next) => {
   const token = req.cookies.jwt;
-
   let payload;
-
   try {
-    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
+    payload = jwt.verify(token, `${NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret'}`);
   } catch (err) {
-    throw new NotAuthorizedError('Передан некорректный токен');
+    throw new UnauthorizedError({ message: 'Необходима авторизация' });
   }
-
   req.user = payload;
 
-  return next();
+  next();
 };
-
-module.exports = auth;

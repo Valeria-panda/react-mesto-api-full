@@ -1,4 +1,4 @@
-class NotAuthorizedError extends Error {
+class UnauthorizedError extends Error {
   constructor(message, ...rest) {
     super(...rest);
     this.status = 401;
@@ -6,4 +6,4 @@ class NotAuthorizedError extends Error {
   }
 }
 
-module.exports = NotAuthorizedError;
+module.exports = UnauthorizedError;

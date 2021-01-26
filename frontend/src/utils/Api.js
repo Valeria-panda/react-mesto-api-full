@@ -1,104 +1,80 @@
-// import {options} from './constant.js'
+import { apiOptions } from './constant';
 
+class Api {
+  constructor(options) {
+    this._url = options.baseUrl;
+    this._headers = options.headers;
+  }
 
+  //Отправить запрос
+  _sendRequest(path, parameters) {
+    return fetch(`${this._url}${path}`, parameters).then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(res.status);
+    });
+  }
 
-// class Api {
-//     constructor(options) {
-//       this._baseUrl = options.baseUrl;
-//       this._headers = options.headers;
-//     }
+  //Получить данные пользователя
+  getUserInfo() {
+    return this._sendRequest(`users/me`, {
+      headers: this._headers,
+    });
+  }
 
-//     // проверяем ответ сервера
-//     _serverAnswer(res){
-//       if (res.ok) {
-//         return res.json();
-//       }
-//       return Promise.reject(`Ошибка: ${res.status}`);
-//     }
-    
-//     // подгружаем с сервера данные карточек
-//     getInitialCards() {
-//       return fetch(`${this._baseUrl}/cards`, {
-//         headers: this._headers,
-//         credentials: 'include',
-//       })
-//       .then(this._serverAnswer)
-//     }
+  //Получить карточки
+  getInitialCards() {
+    return this._sendRequest(`cards`, { headers: this._headers });
+  }
 
-//     // подгружаем информацию о пользователе с сервера
-//     getUserInfo() {
-//       return fetch(`${this._baseUrl}/users/me`, {
-//         headers: this._headers,
-//         credentials: 'include',
-//       })
-//       .then(this._serverAnswer)
-//     }
+  //Обновить информацию о пользователе
+  updateUserInfo(newUserInfo) {
+    return this._sendRequest(`users/me`, {
+      method: 'PATCH',
+      headers: this._headers,
+      body: JSON.stringify({
+        name: newUserInfo.name,
+        about: newUserInfo.about,
+      }),
+    });
+  }
 
-//     // загружаем на сервер информацию о пользователе, отредактированную
-//     updateUserInfo(newUserInfo) {
-//       return fetch(`${this._baseUrl}/users/me`, {
-//         method: 'PATCH',
-//         headers: this._headers,
-//         body: JSON.stringify({
-//           name: newUserInfo.name,
-//           about: newUserInfo.about,
-//         }),
-//         credentials: 'include',
-//       })
-//       .then(this._serverAnswer)
-//     }
-  
-//     //обновление аватара
-//     setUserAvatar(avatar) {
-//       return fetch(`${this._baseUrl}/users/me/avatar`, {
-//         method: 'PATCH',
-//         body: JSON.stringify({ avatar: avatar.avatar }),
-//         headers: this._headers,
-//       })
-//       .then(this._serverAnswer)
-//     }
-  
-//     // добавление новой карты
-//     postNewCard(data) {
-//       return fetch(`${this._baseUrl}/cards`, {
-//         headers: this._headers,
-//         method: "POST",
-//         body: JSON.stringify({
-//           name: data.name,
-//           link: data.link,
-//         }),
-//       })
-//       .then(this._serverAnswer)
-//     }
-    
-//     // удаление карточки 
-//     deleteCard(cardId) {
-//       return fetch(`${this._baseUrl}/cards/${cardId}`, {
-//         headers: this._headers,
-//         method: "DELETE",
-//       })
-//       .then(this._serverAnswer)
-//     }
+  //Добавить новую карточку
+  postNewCard(newCard) {
+    return this._sendRequest(`cards`, {
+      method: 'POST',
+      body: JSON.stringify({
+        name: newCard.title,
+        link: newCard.link,
+      }),
+      headers: this._headers,
+    });
+  }
 
-//     //постановка лайка
-//     changeLikeCardStatus(cardId, isLiked) {
-//       return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
-//         method: `${isLiked ? 'PUT' : 'DELETE'}`,
-//         headers: this._headers,
-//       })
-//       .then(this._serverAnswer)
-//     }
+  changeLikeCardStatus(id, isLiked) {
+    return this._sendRequest(`cards/likes/${id}`, {
+      method: `${isLiked ? 'PUT' : 'DELETE'}`,
+      headers: this._headers,
+    });
+  }
 
-//     // снятие лайка
-//     deleteLike(cardId) {
-//       return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
-//         method: "DELETE",
-//         headers: this._headers,
-//       })
-//       .then(this._serverAnswer)
-//     }
+  //Удалить фото
+  deleteCard(id) {
+    return this._sendRequest(`cards/${id}`, {
+      method: 'DELETE',
+      headers: this._headers,
+    });
+  }
 
-// }
- 
-  
-//   export const api = new Api(options);
+  //Обновить аватар
+  updateUserAvatar(avatar) {
+    return this._sendRequest(`users/me/avatar`, {
+      method: 'PATCH',
+      body: JSON.stringify({ avatar: avatar.url }),
+      headers: this._headers,
+    });
+  }
+}
+
+export const api = new Api(apiOptions);

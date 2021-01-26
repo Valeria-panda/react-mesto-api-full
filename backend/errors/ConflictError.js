@@ -1,4 +1,5 @@
-class AlreadyExistError extends Error {
+
+class ConflictError extends Error {
   constructor(message, ...rest) {
     super(...rest);
     this.status = 409;
@@ -6,4 +7,4 @@ class AlreadyExistError extends Error {
   }
 }
 
-module.exports = AlreadyExistError;
+module.exports = ConflictError;
