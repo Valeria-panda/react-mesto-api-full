@@ -3,7 +3,7 @@ import NotAuthorizedError from '../errors/notAuthorizedError';
 // старый вариант
 // export const BASE_URL = 'https://auth.nomoreparties.co';
 
-export const BASE_URL = 'https://www.api.advent.students.nomoredomains.rocks';
+export const BASE_URL = 'https://api.advent.students.nomoredomains.rocks';
 
 
 
@@ -14,6 +14,7 @@ export const register = (password, email) => fetch(`${BASE_URL}/signup`, {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({ password, email }),
+  credentials: 'include',
 })
   .then((res) => {
     if (!res.ok) {
@@ -36,6 +37,7 @@ export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({ password, email }),
+  credentials: 'include',
 })
   .then((res) => {
     if (res.status === 400) {
@@ -47,19 +49,20 @@ export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
     return res.json();
   })
 
-  .then((data) => {
-    if (data.token) {
-      localStorage.setItem('jwt', data.token);
-      return data.token;
-    }
-  });
+  // .then((data) => {
+  //   if (data.token) {
+  //     localStorage.setItem('jwt', data.token);
+  //     return data.token;
+  //   }
+  // });
 
 // Отправляем запрос на получение токена
-export const getContent = (jwt) => fetch(`${BASE_URL}/users/me`, {
+export const getContent = () => fetch(`${BASE_URL}/users/me`, {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${jwt}`,
+    // 'Authorization': `Bearer ${jwt}`,
+    credentials: 'include',
   },
 })
   .then((res) => {
@@ -71,4 +74,4 @@ export const getContent = (jwt) => fetch(`${BASE_URL}/users/me`, {
     }
     return res.json()
   })
-  .then((data) => data);
+  // .then((data) => data);

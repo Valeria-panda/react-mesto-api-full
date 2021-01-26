@@ -1,5 +1,5 @@
 
-const cors = require('cors');
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -7,8 +7,9 @@ const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-
-
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const { corsConfig } = require('./middlewares/cors');
 require('dotenv').config();
 const app = express();
 const users = require('./routes/users.js');
@@ -19,28 +20,25 @@ const NotFoundError = require('./errors/notFoundError.js');
 const { PORT = 3000 } = process.env;
 
 
+mongoose.connect('mongodb://localhost:27017/mestodb', {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true,
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-// подключаемся к серверу mongo
-mongoose.connect('mongodb://localhost:27017/mestodb',
-  {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-  });
+app.use(cookieParser());
+app.use(requestLogger);
 
-
-app.use(requestLogger); // подключаем логгер запросов
-
+app.use('*', cors(corsConfig));
 
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
-
 
 
 app.post('/signin', celebrate({

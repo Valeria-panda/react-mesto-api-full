@@ -20,6 +20,7 @@ class Api {
     getInitialCards() {
       return fetch(`${this._baseUrl}/cards`, {
         headers: this._headers,
+        credentials: 'include',
       })
       .then(this._serverAnswer)
     }
@@ -28,6 +29,7 @@ class Api {
     getUserInfo() {
       return fetch(`${this._baseUrl}/users/me`, {
         headers: this._headers,
+        credentials: 'include',
       })
       .then(this._serverAnswer)
     }
@@ -41,6 +43,7 @@ class Api {
           name: newUserInfo.name,
           about: newUserInfo.about,
         }),
+        credentials: 'include',
       })
       .then(this._serverAnswer)
     }

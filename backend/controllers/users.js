@@ -53,23 +53,25 @@ module.exports.createUser = (req, res, next) => {
 
 };
 
+
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
+  User.findUserByCredentials(email, password)
+    .then((existedUser) => {
       const token = jwt.sign(
-        { _id: user._id },
+        { _id: existedUser._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-      res
-        .cookie('jwt', token, {
-          maxAge: 3600000 * 24 * 7,
+
+      User.findOne({ email })
+        .then((user) => res.cookie('jwt', token, {
           httpOnly: true,
           sameSite: true,
+          maxAge: (3600 * 24 * 7),
         })
-        .send(user);
+          .send(user));
     })
     .catch(next);
 };

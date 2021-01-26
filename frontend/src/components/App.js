@@ -57,61 +57,113 @@ function App() {
 
   
   // Получить данные пользователя
-  React.useEffect(() => {
-    api
-      .getUserInfo()
-      .then((res) => {
-        setCurrentUser(res);
-      })
-      .catch((err) => console.log(`Ошибка при загрузке информации о пользователе: ${err}`));
-  }, []);
+  // React.useEffect(() => {
+  //   api
+  //     .getUserInfo()
+  //     .then((res) => {
+  //       setCurrentUser(res);
+  //     })
+  //     .catch((err) => console.log(`Ошибка при загрузке информации о пользователе: ${err}`));
+  // }, []);
 
   // Проверить токен
-  React.useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      auth.getContent(jwt)
-        .then((res) => {
-          setLoggedIn(true);
-          setEmail(res.data.email);
-          history.push('/');
-        })
-        .catch(err => console.log(err));
-    }
-  }, [history]);
+  // React.useEffect(() => {
+  //   const jwt = localStorage.getItem('jwt');
+  //   if (jwt) {
+  //     auth.getContent(jwt)
+  //       .then((res) => {
+  //         setLoggedIn(true);
+  //         setEmail(res.data.email);
+  //         history.push('/');
+  //       })
+  //       .catch(err => console.log(err));
+  //   }
+  // }, [history]);
 
   // // Регистрация
-  function handleRegister(password, email) {
-    auth
+  // function handleRegister(password, email) {
+  //   auth
     
-    .register(password, email)
+  //   .register(password, email)
+  //     .then(() => {
+  //       setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
+  //       history.push('/sign-in');
+  //     })
+  //     .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
+  //      setInfoTooltipOpen(true);
+  // }
+
+  function handleRegister({ email, password }) {
+    setLoading(true);
+
+    auth.register({ email, password })
       .then(() => {
-        setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
-        history.push('/sign-in');
+        // setInfoTooltipOk();
+        setInfoTooltipOpen(true);
+
+        history.push('/signin');
       })
-      .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
-       setInfoTooltipOpen(true);
+      .catch(() => {
+        // setInfoTooltipError();
+        setInfoTooltipOpen(true);
+      })
+      .finally(() => setLoading(false));
   }
 
-  // // Авторизация
-  function handleLogin(password, email) {
-    return  auth
-     .authorize(password, email)
-    
-      .then((data) => {
-        auth
-         .getContent(data)
-          .then((res) => {
-            setEmail(res.data.email);
-          })
-          .catch(err => console.log(err));
+  function handleLogin({ email, password }) {
+    setLoading(true);
+
+    auth.authorize({ email, password })
+      .then((user) => {
         setLoggedIn(true);
-        setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
-        history.push('/');
+        setCurrentUser(user);
       })
-      .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
-      //  setInfoTooltipOpen(true);
+      .catch(() => {
+        // setInfoTooltipError();
+        setInfoTooltipOpen(true);
+      })
+      .finally(() => setLoading(false));
   }
+
+  React.useEffect(() => {
+    api.getUserInfo()
+      .then((user) => {
+        setLoggedIn(true);
+        setCurrentUser(user);
+        return;
+      })
+      .catch((err) => console.log(err));
+  }, [loggedIn]);
+
+  React.useEffect(() => {
+    if (loggedIn) {
+      api.getInitialCards()
+        .then((initialCards) => setCards(initialCards.reverse()))
+        .catch((err) => console.log(err));
+      }
+      return;
+  }, [loggedIn]);
+
+
+  // // Авторизация
+  // function handleLogin(password, email) {
+  //   return  auth
+  //    .authorize(password, email)
+    
+  //     .then((data) => {
+  //       auth
+  //        .getContent(data)
+  //         .then((res) => {
+  //           setEmail(res.data.email);
+  //         })
+  //         .catch(err => console.log(err));
+  //       setLoggedIn(true);
+  //       setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
+  //       history.push('/');
+  //     })
+  //     .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
+  //     //  setInfoTooltipOpen(true);
+  // }
  
   // Выход
   function handleSignOut() {
@@ -121,17 +173,17 @@ function App() {
     history.push('/sign-in');
   }
 
-  //данные о текущем пользователе
-  React.useEffect(() => {
-    api
-      .getUserInfo()
-      .then((currentUserInfoData) => {
-        setCurrentUser(currentUserInfoData);
-      })
-      .catch((err) =>
-        console.log(`Ошибка при загрузке информации о пользователе: ${err}`)
-      );
-  }, []);
+  // //данные о текущем пользователе
+  // React.useEffect(() => {
+  //   api
+  //     .getUserInfo()
+  //     .then((currentUserInfoData) => {
+  //       setCurrentUser(currentUserInfoData);
+  //     })
+  //     .catch((err) =>
+  //       console.log(`Ошибка при загрузке информации о пользователе: ${err}`)
+  //     );
+  // }, []);
 
   //Открыть попап аватара
   function handleEditAvatarClick() {
