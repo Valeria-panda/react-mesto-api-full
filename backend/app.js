@@ -80,7 +80,6 @@ const { corsConfig } = require('./middlewares/cors');
 //   console.log(`App listening on port ${PORT}`);
 // });
 
-
 require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
