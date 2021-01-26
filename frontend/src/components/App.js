@@ -92,20 +92,22 @@ function App() {
   }
 
   React.useEffect(() => {
-    auth.getUserInfo()
-      .then((user) => {
-        setLoggedIn(true);
-        setCurrentUser(user);
-        return;
+    auth
+    .getUserInfo()
+    .then((user) => {
+      setLoggedIn(true);
+      setCurrentUser(user);
+      return;
       })
       .catch((err) => console.log(err));
   }, [loggedIn]);
 
   React.useEffect(() => {
     if (loggedIn) {
-      auth.getInitialCards()
-        .then((initialCards) => setCards(initialCards.reverse()))
-        .catch((err) => console.log(err));
+      auth
+      .getInitialCards()
+      .then((initialCards) => setCards(initialCards.reverse()))
+      .catch((err) => console.log(err));
       }
       return;
   }, [loggedIn]);

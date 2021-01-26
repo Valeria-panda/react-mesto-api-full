@@ -1,5 +1,5 @@
-// import BadRequestError from '../errors/badRequestError';
-// import NotAuthorizedError from '../errors/notAuthorizedError';
+import BadRequestError from '../errors/badRequestError';
+import NotAuthorizedError from '../errors/notAuthorizedError';
 // старый вариант
 // export const BASE_URL = 'https://auth.nomoreparties.co';
 
@@ -8,46 +8,46 @@ export const BASE_URL = 'https://api.advent.students.nomoredomains.rocks';
 
 
 // // Отправляем запрос за регистрацию
-// export const register = (password, email) => fetch(`${BASE_URL}/signup`, {
-//   method: 'POST',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-//   body: JSON.stringify({ password, email }),
-//   credentials: 'include',
-// })
-//   .then((res) => {
-//     if (!res.ok) {
-//       return res.json()
-//         .then((err) => {
-//           if (err.error) {
-//             throw new BadRequestError(err.error);
-//           } else {
-//             throw new BadRequestError(err.message);
-//           }
-//         });
-//     }
-//     return res.json();
-//   });
+export const register = (password, email) => fetch(`${BASE_URL}/signup`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ password, email }),
+  credentials: 'include',
+})
+  .then((res) => {
+    if (!res.ok) {
+      return res.json()
+        .then((err) => {
+          if (err.error) {
+            throw new BadRequestError(err.error);
+          } else {
+            throw new BadRequestError(err.message);
+          }
+        });
+    }
+    return res.json();
+  });
 
 // // // Отправляем запрос за авторизацию
-// export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
-//   method: 'POST',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-//   body: JSON.stringify({ password, email }),
-//   credentials: 'include',
-// })
-//   .then((res) => {
-//     if (res.status === 400) {
-//       throw new BadRequestError('Не передано одно из полей');
-//     }
-//     else if (res.status === 401) {
-//       throw new NotAuthorizedError('Пользователь с таким email не найден');
-//     }
-//     return res.json();
-//   })
+export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ password, email }),
+  credentials: 'include',
+})
+  .then((res) => {
+    if (res.status === 400) {
+      throw new BadRequestError('Не передано одно из полей');
+    }
+    else if (res.status === 401) {
+      throw new NotAuthorizedError('Пользователь с таким email не найден');
+    }
+    return res.json();
+  })
 
 // // Отправляем запрос на получение токена
 // export const getContent = () => fetch(`${BASE_URL}/users/me`, {
@@ -87,31 +87,31 @@ export function handlePromiseRes(res) {
   };
 
 
-  export function register({ email, password }) {
-    return fetch(`${BASE_URL}/signup`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        email,
-        password
-      }),
-      credentials: 'include',
-    })
-      .then((res) => handlePromiseRes(res))
-  }
+  // export function register(password, email) {
+  //   return fetch(`${BASE_URL}/signup`, {
+  //     method: 'POST',
+  //     headers,
+  //     body: JSON.stringify({
+  //       email,
+  //       password
+  //     }),
+  //     credentials: 'include',
+  //   })
+  //     .then((res) => handlePromiseRes(res))
+  // }
   
-  export function authorize({ email, password }) {
-    return fetch(`${BASE_URL}/signin`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        email,
-        password
-      }),
-      credentials: 'include',
-    })
-      .then((res) => handlePromiseRes(res))
-  }
+  // export function authorize({ email, password }) {
+  //   return fetch(`${BASE_URL}/signin`, {
+  //     method: 'POST',
+  //     headers,
+  //     body: JSON.stringify({
+  //       email,
+  //       password
+  //     }),
+  //     credentials: 'include',
+  //   })
+  //     .then((res) => handlePromiseRes(res))
+  // }
   
   export function signout() {
     return fetch(`${BASE_URL}/signout`, {
