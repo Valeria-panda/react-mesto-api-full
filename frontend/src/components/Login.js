@@ -5,7 +5,8 @@ function Login({ onLogin }){
     
     function submitForm(password, email) {
         onLogin(password, email);
-      }
+    }
+
     return(
         <AuthorizeForm
             title='Вход'
