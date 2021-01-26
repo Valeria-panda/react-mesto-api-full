@@ -11,7 +11,7 @@ function Register({ onRegister }){
         <AuthorizeForm
             title='Регистрация'
             submitButtonText='Зарегистрироваться'
-            path='/sign-in'
+            path='/signup'
             loginText='Уже зарегистрированы?'
             loginLink='Войти'
             onSubmit={submitForm}

@@ -80,17 +80,15 @@ function App() {
 
   // // Регистрация
   function handleRegister(password, email) {
-    auth
-    
-    .register(password, email)
+    auth.register(password, email)
       .then(() => {
         setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
-        history.push('/sign-in');
+        history.push('/signin');
       })
       .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
        setInfoTooltipOpen(true);
   }
-
+// поучить данные пользователя
   React.useEffect(() => {
     auth
     .getUserInfo()
@@ -102,6 +100,7 @@ function App() {
       .catch((err) => console.log(err));
   }, [loggedIn]);
 
+// получить данные карточек
   React.useEffect(() => {
     if (loggedIn) {
       auth
@@ -115,19 +114,19 @@ function App() {
 
   // // Авторизация
   function handleLogin(password, email) {
-    return  auth
-     .authorize(password, email)
-    
+    auth.authorize(password, email)
       .then((data) => {
         auth
          .getUserInfo(data)
-          .then((res) => {
-            setEmail(res.data.email);
+          .then((data) => {
+            setEmail(data.email);
+            setCurrentUser(data.user);
+            // setCards(data);
           })
           .catch(err => console.log(err));
-        setLoggedIn(true);
-        setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
-        history.push('/');
+          setLoggedIn(true);
+          setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
+          history.push('/');
       })
       .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
       //  setInfoTooltipOpen(true);
@@ -227,14 +226,14 @@ function App() {
       
   }
   //Получить данные карточек с фото
-  React.useEffect(() => {
-    auth
-        .getInitialCards()
-        .then((cardData) => {
-          setCards(cardData);
-        })
-        .catch((err) => console.log(`Ошибка при загрузке карточек: ${err}`));
-  }, []);
+  // React.useEffect(() => {
+  //   auth
+  //       .getInitialCards()
+  //       .then((cardData) => {
+  //         setCards(cardData);
+  //       })
+  //       .catch((err) => console.log(`Ошибка при загрузке карточек: ${err}`));
+  // }, []);
   
   function handleAddPlace(card) {
       setLoading(true);
@@ -274,15 +273,15 @@ function App() {
                     onAddPlace={handleAddPlaceClick}
                     onEditAvatar={handleEditAvatarClick}
             />
-          <Route path='/sign-in'>
+          <Route path='/signin'>
             <Login onLogin={handleLogin} />
           </Route>
          
-          <Route path='/sign-up'>
+          <Route path='/signup'>
             <Register onRegister={handleRegister} />
           </Route>
           <Route>
-            {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+            {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
           </Route>
         </Switch>
 
