@@ -1,6 +1,6 @@
 
 // const cookieParser = require('cookie-parser');
-// const cors = require('cors');
+const cors = require('cors');
 // const express = require('express');
 // const mongoose = require('mongoose');
 // const bodyParser = require('body-parser');
@@ -9,7 +9,7 @@
 // const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 
-// const { corsConfig } = require('./middlewares/cors');
+const { corsConfig } = require('./middlewares/cors');
 // require('dotenv').config();
 // const app = express();
 // const users = require('./routes/users.js');
@@ -102,6 +102,7 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
+
 app.use(helmet());
 
 app.use(cookieParser());
@@ -125,6 +126,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(requestLogger);
 
+app.use('*', cors(corsConfig));
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
