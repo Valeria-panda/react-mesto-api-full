@@ -52,25 +52,22 @@ const userSchema = new mongoose.Schema({
 
 });
 
-userSchema.statics.findUserByCredentials = function(email, password){
-
-  // пытаемся найти пользовател по почте
-  return this.findOne({email}) // this — это модель User
-    .then((user)=>{
-      // не нашёлся — отклоняем промис
-      if(!user){
-        throw new NotAuthorizedError({ message: 'Неправильные email или пароль' });
+userSchema.statics.findUserByCredentials = function (email, password) {
+  return this.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        throw new UnauthorizedError({ message: 'Неправильные email или пароль' });
       }
-      // нашёлся — сравниваем хеши
       return bcrypt.compare(password, user.password)
-      .then((matched) => {
-        if(!matched){
-          throw new NotAuthorizedError({ message: 'Неправильные email или пароль' });
-        }
-        return user;
-      });
+        .then((matched) => {
+          if (!matched) {
+            throw new UnauthorizedError({ message: 'Неправильные email или пароль' });
+          }
+          return user;
+        });
     });
-}
+};
+
 
 
 

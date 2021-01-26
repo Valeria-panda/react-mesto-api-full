@@ -53,7 +53,7 @@ function App() {
   });
   const location = useLocation();
   const history = useHistory();
-  // const escape = require('escape-html');
+  const escape = require('escape-html');
 
   
   // Получить данные пользователя
@@ -65,6 +65,7 @@ function App() {
       })
       .catch((err) => console.log(`Ошибка при загрузке информации о пользователе: ${err}`));
   }, []);
+
   // Проверить токен
   React.useEffect(() => {
     const jwt = localStorage.getItem('jwt');
@@ -82,8 +83,8 @@ function App() {
   // // Регистрация
   function handleRegister(password, email) {
     auth
-    .register(password, email)
-    // .register(escape(password), email)
+    // .register(password, email)
+    .register(escape(password), email)
       .then(() => {
         setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
         history.push('/sign-in');
@@ -95,8 +96,8 @@ function App() {
   // // Авторизация
   function handleLogin(password, email) {
     return  auth
-    //  .authorize(escape(password), email)
-    .authorize(password, email)
+     .authorize(escape(password), email)
+    // .authorize(password, email)
       .then((data) => {
         auth
          .getContent(data)

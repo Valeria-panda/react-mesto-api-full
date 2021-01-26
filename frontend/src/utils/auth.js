@@ -47,15 +47,14 @@ export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
     return res.json();
   })
 
-  // вот этот кусок неясно
-  // .then((data) => {
-  //   if (data.token) {
-  //     localStorage.setItem('jwt', data.token);
-  //     return data.token;
-  //   }
-  // });
+  .then((data) => {
+    if (data.token) {
+      localStorage.setItem('jwt', data.token);
+      return data.token;
+    }
+  });
 
-// Отправляем запрос за получение токена
+// Отправляем запрос на получение токена
 export const getContent = (jwt) => fetch(`${BASE_URL}/users/me`, {
   method: 'GET',
   headers: {
@@ -72,4 +71,4 @@ export const getContent = (jwt) => fetch(`${BASE_URL}/users/me`, {
     }
     return res.json()
   })
-  // .then((data) => data);
+  .then((data) => data);
