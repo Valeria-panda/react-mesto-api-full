@@ -1,5 +1,6 @@
 
-
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -7,8 +8,7 @@ const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
+
 const { corsConfig } = require('./middlewares/cors');
 require('dotenv').config();
 const app = express();
@@ -34,12 +34,12 @@ app.use(requestLogger);
 
 app.use('*', cors(corsConfig));
 
+
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
 });
-
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
