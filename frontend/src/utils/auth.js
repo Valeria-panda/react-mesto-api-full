@@ -2,7 +2,7 @@ import BadRequestError from '../errors/badRequestError';
 import NotAuthorizedError from '../errors/notAuthorizedError';
 
 
-export const BASE_URL = 'http://www.api.advent.students.nomoredomains.rocks';
+export const BASE_URL = 'https://api.advent.students.nomoredomains.rocks';
 
 
 // Отправляем запрос за регистрацию

@@ -88,7 +88,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
-const helmet = require('helmet');
 const users = require('./routes/users.js');
 const cards = require('./routes/cards.js');
 const auth = require('./middlewares/auth');
@@ -103,7 +102,6 @@ const { PORT = 3000 } = process.env;
 const app = express();
 
 
-app.use(helmet());
 
 app.use(cookieParser());
 
@@ -127,6 +125,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 app.use(requestLogger);
 
 app.use('*', cors(corsConfig));
+
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
