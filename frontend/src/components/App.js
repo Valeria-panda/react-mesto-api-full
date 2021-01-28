@@ -1,5 +1,5 @@
 
-import React, { useState }  from 'react';
+import React, { useState, useEffect }  from 'react';
 import {
   Route, Switch, useLocation, Redirect, useHistory,
 } from 'react-router-dom';
@@ -74,45 +74,61 @@ function App() {
 
 
 // поучить данные пользователя
-React.useEffect(() => {
-  if (loggedIn) {
-    api
-      .getUserInfo()
-      .then((res) => {
-        console.log(res)
-        setCurrentUser(res);
-        console.log(currentUser)
+// useEffect(() => {
+//   if (loggedIn) {
+//     api
+//       .getUserInfo()
+//       .then((user) => {
+//         setCurrentUser(user);
+//       })
+//       .catch((err) => console.log(`Ошибка при загрузке информации о пользователе: ${err}`));
+//     }
+// }, [loggedIn]);
+
+// поучить данные пользователя
+  useEffect(() => {
+    api.getUserInfo()
+      .then((user) => {
+        setLoggedIn(true);
+        setCurrentUser(user);
+        return;
       })
-      .catch((err) => console.log(`Ошибка при загрузке информации о пользователе: ${err}`));
-    }
-}, [loggedIn]);
+      .catch((err) => console.log(err));
+  }, [loggedIn]);
 
 // Регистрация
 function handleRegister(password, email) {
+
   auth.register(escape(password), email)
     .then(() => {
       setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
       history.push('/signin');
     })
-    .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
-  setInfoTooltipOpen(true);
+    .catch((err) => {
+      setMessage({ iconPath: rejectPath, text: err.message });
+      setInfoTooltipOpen(true);
+    })
 }
 
 // Авторизация
 function handleLogin(password, email) {
+
   auth.authorize(escape(password), email)
-    .then((data) => {
-      setCurrentUser(data);
+    .then((user) => {
+      // setLoggedIn(true);
+      setCurrentUser(user);
       setLoggedIn(true);
       setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
-      setEmail(data.email);
+      setEmail(user.email);
       history.push('/');
     })
-    .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))
-  setInfoTooltipOpen(true);
+    .catch((err) => {
+      setMessage({ iconPath: rejectPath, text: err.message })
+      setInfoTooltipOpen(true);
+    })
+
+
 }
-
-
   // Выход
   function handleSignOut() {
     setLoggedIn(false);
@@ -122,18 +138,16 @@ function handleLogin(password, email) {
   }
 
   // Получить карточки
-  React.useEffect(() => {
+  useEffect(() => {
     if (loggedIn) {
       api
         .getInitialCards()
-        .then((cardData) => {
-          setCards(cardData);
+        .then((initialCards) => {
+          setCards(initialCards);
         })
         .catch((err) => console.log(`Ошибка при загрузке карточек: ${err}`));
       }
   }, [loggedIn]);
-
-
 
   //Открыть попап аватара
   function handleEditAvatarClick() {
@@ -167,7 +181,7 @@ function handleLogin(password, email) {
     .catch((err) =>
         console.log(`Ошибка при постановке лайка: ${err}`)
     );
-  } 
+  }
    //Удалить карточку после подтверждения
    function handleConfirm() {
     api
@@ -177,7 +191,7 @@ function handleLogin(password, email) {
         closeAllPopups();
       })
       .catch((err) => console.log(`Ошибка при удалении карточки: ${err}`));
-    
+
   }
   //Кликнуть на удаление карточки
   function handleCardDelete(card) {
@@ -204,7 +218,7 @@ function handleLogin(password, email) {
         })
         .catch((err) => console.log(`Ошибка при обновлении аватара: ${err}`))
         .finally(() => setLoading(false));
-        
+
   }
   //Обновить данные пользователя
   function handleUpdateUser(userData) {
@@ -217,9 +231,9 @@ function handleLogin(password, email) {
         })
         .catch((err) => `Ошибка при обновлении информации о пользователе: ${err}`)
         .finally(() => setLoading(false));
-      
+
   }
-  
+
   function handleAddPlace(card) {
       setLoading(true);
       api
@@ -232,9 +246,9 @@ function handleLogin(password, email) {
           console.log(`Ошибка при добавлении новой карточки: ${err}`)
         )
         .finally(() => setLoading(false));
-      
+
   }
-    
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
         <div className="root">
@@ -242,13 +256,13 @@ function handleLogin(password, email) {
           {(loggedIn && isAuthInfoOpened)}
 
             <Header loggedIn={loggedIn}
-                    locaction={location}
+                    location={location}
                     email={email}
                     signOut={handleSignOut}
                     isAuthInfoOpened={isAuthInfoOpened}
             />
             <Switch>
-      
+
             <ProtectedRoute exact path="/" loggedIn={loggedIn} component={Main}
                     cards={cards}
                     onCardClick={handleCardClick}
@@ -261,7 +275,7 @@ function handleLogin(password, email) {
           <Route path='/signin'>
             <Login onLogin={handleLogin} />
           </Route>
-         
+
           <Route path='/signup'>
             <Register onRegister={handleRegister} />
           </Route>
@@ -301,14 +315,14 @@ function handleLogin(password, email) {
               onClose={closeAllPopups}
               onConfirmDelete={handleConfirm}
             />
-          
-            <ImagePopup 
+
+            <ImagePopup
             name={selectedCard.name}
             link={selectedCard.link}
             isOpen={selectedCard.isImageOpen}
             onClose={closeAllPopups}
             />
-            
+
           </div>
         </div>
     </CurrentUserContext.Provider>
