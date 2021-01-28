@@ -1,5 +1,5 @@
-import BadRequestError from '../errors/BadRequestError';
-import UnauthorizedError from '../errors/UnauthorizedError';
+import BadRequestError from '../errors/badRequestError';
+import UnauthorizedError from '../errors/unauthorizedError';
 
 
 export const BASE_URL = 'https://api.advent.students.nomoredomains.rocks';
