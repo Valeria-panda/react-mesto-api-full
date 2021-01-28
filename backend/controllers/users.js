@@ -10,89 +10,41 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    // не моя строка
-    // .then((users) => res.send(users))
     .then((users) => res.send({ data: users }))
     .catch(next);
 };
 
-// module.exports.getCurrentUser = (req, res, next) => {
-//   User.findById(req.params._id)
-//     .orFail()
-//     .catch(() => {
-//       throw new NotFoundError({ message: 'Нет пользователя с таким id' });
-//     })
-//     .then((user) => res.send({ data: user }))
-//     .catch(next);
-// };
-
 module.exports.getCurrentUser = (req, res, next) => {
-  User.findById(req.user._id)
-    // .then((user) => res.send(user))
+  User.findById(req.params._id)
+    .orFail()
+    .catch(() => {
+      throw new NotFoundError({ message: 'Нет пользователя с таким id' });
+    })
     .then((user) => res.send({ data: user }))
     .catch(next);
 };
 
-// module.exports.createUser = (req, res, next) => {
-//   const { name, about, avatar, email, password } = req.body;
-
-//   bcrypt.hash(password, 10)
-//     .then((hash) => User.create({
-//       name, about, avatar, email, password: hash,
-//     }))
-//     .catch((err) => {
-//       if (err.name === 'MongoError' || err.code === 11000) {
-//         throw new ConflictError({ message: 'Пользователь с таким email уже зарегистрирован' });
-//       } else next(err);
-//     })
-//     .then((user) => res.status(201).send({
-//       data: {
-//         name: user.name, about: user.about, avatar, email: user.email,
-//       },
-//     }))
-//     .catch(next);
-// };
-
-// не мой кусок кода
 module.exports.createUser = (req, res, next) => {
   const {
-    name,
-    about,
-    avatar,
-    email,
-    password,
+    name, about, avatar, email, password,
   } = req.body;
 
-  User.findOne({ email })
-    .then((existedUser) => {
-      if (existedUser) {
-        throw new BadRequestError('Пользователь с таким email уже существует');
-      }
-
-      bcrypt.hash(password, 10)
-        .then((hash) => User.create({
-          name,
-          about,
-          avatar,
-          email,
-          password: hash,
-        }))
-        .then((createdUser) => {
-          if (!createdUser) {
-            throw new BadRequestError('Переданы некорректные данные');
-          }
-
-          User.findOne({ email })
-            .then((user) => res.send({
-                    data: {
-                      name: user.name, about: user.about, avatar, email: user.email,
-                    },
-                  }))
-        });
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+    .catch((err) => {
+      if (err.name === 'MongoError' || err.code === 11000) {
+        throw new ConflictError({ message: 'Пользователь с таким email уже зарегистрирован' });
+      } else next(err);
     })
+    .then((user) => res.status(201).send({
+      data: {
+        name: user.name, about: user.about, avatar, email: user.email,
+      },
+    }))
     .catch(next);
 };
-
 
 module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
@@ -165,7 +117,8 @@ module.exports.getUserById = (req, res, next) => {
       if (!user) {
         throw new NotFoundError('Нет пользователя с таким id');
       }
-      res.send({ data: user })
+
+      res.send(user);
     })
     .catch(next);
 };

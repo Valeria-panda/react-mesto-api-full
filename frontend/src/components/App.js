@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect }  from 'react';
+import React, { useState }  from 'react';
 import {
   Route, Switch, useLocation, Redirect, useHistory,
 } from 'react-router-dom';
@@ -74,61 +74,45 @@ function App() {
 
 
 // поучить данные пользователя
-// useEffect(() => {
-//   if (loggedIn) {
-//     api
-//       .getUserInfo()
-//       .then((user) => {
-//         setCurrentUser(user);
-//       })
-//       .catch((err) => console.log(`Ошибка при загрузке информации о пользователе: ${err}`));
-//     }
-// }, [loggedIn]);
-
-// поучить данные пользователя
-  useEffect(() => {
-    api.getUserInfo()
-      .then((user) => {
-        setLoggedIn(true);
-        setCurrentUser(user);
-        return;
+React.useEffect(() => {
+  if (loggedIn) {
+    api
+      .getUserInfo()
+      .then((res) => {
+        console.log(res)
+        setCurrentUser(res);
+        console.log(currentUser)
       })
-      .catch((err) => console.log(err));
-  }, [loggedIn]);
+      .catch((err) => console.log(`Ошибка при загрузке информации о пользователе: ${err}`));
+    }
+}, [loggedIn]);
 
 // Регистрация
 function handleRegister(password, email) {
-
   auth.register(escape(password), email)
     .then(() => {
       setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
       history.push('/signin');
     })
-    .catch((err) => {
-      setMessage({ iconPath: rejectPath, text: err.message });
-      setInfoTooltipOpen(true);
-    })
+    .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
+  setInfoTooltipOpen(true);
 }
 
 // Авторизация
 function handleLogin(password, email) {
-
   auth.authorize(escape(password), email)
-    .then((user) => {
-      // setLoggedIn(true);
-      setCurrentUser(user);
+    .then((data) => {
+      setCurrentUser(data);
       setLoggedIn(true);
       setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
-      setEmail(user.email);
+      setEmail(data.email);
       history.push('/');
     })
-    .catch((err) => {
-      setMessage({ iconPath: rejectPath, text: err.message })
-      setInfoTooltipOpen(true);
-    })
-
-
+    .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))
+  setInfoTooltipOpen(true);
 }
+
+
   // Выход
   function handleSignOut() {
     setLoggedIn(false);
@@ -138,16 +122,18 @@ function handleLogin(password, email) {
   }
 
   // Получить карточки
-  useEffect(() => {
+  React.useEffect(() => {
     if (loggedIn) {
       api
         .getInitialCards()
-        .then((initialCards) => {
-          setCards(initialCards);
+        .then((cardData) => {
+          setCards(cardData);
         })
         .catch((err) => console.log(`Ошибка при загрузке карточек: ${err}`));
       }
   }, [loggedIn]);
+
+
 
   //Открыть попап аватара
   function handleEditAvatarClick() {
@@ -256,7 +242,7 @@ function handleLogin(password, email) {
           {(loggedIn && isAuthInfoOpened)}
 
             <Header loggedIn={loggedIn}
-                    location={location}
+                    locaction={location}
                     email={email}
                     signOut={handleSignOut}
                     isAuthInfoOpened={isAuthInfoOpened}

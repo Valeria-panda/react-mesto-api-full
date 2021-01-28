@@ -12,6 +12,7 @@ const {
 
 users.get('/users', getUsers);
 users.get('/users/me', getCurrentUser);
+
 users.get('/users/:_id', validateId, getUserById);
 users.patch('/users/me', validateUserUpdate, updateUser);
 users.patch('/users/me/avatar', validateAvatar, updateAvatar);
