@@ -16,7 +16,7 @@ const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { validateUser, validateLogin } = require('./middlewares/requestValidation');
-const NotFoundError = require('./errors/NotFoundError');
+const NotFoundError = require('./errors/notFoundError');
 
 const { PORT = 3000 } = process.env;
 
