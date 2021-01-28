@@ -51,6 +51,10 @@ function App() {
     iconPath: loading,
     text: ''
   });
+
+  const [token, setToken]= useState('');
+
+
   const location = useLocation();
   const history = useHistory();
 
@@ -77,7 +81,7 @@ function App() {
 React.useEffect(() => {
   if (loggedIn) {
     api
-      .getUserInfo()
+      .getUserInfo(token)
       .then((res) => {
         console.log(res)
         setCurrentUser(res);
@@ -85,7 +89,7 @@ React.useEffect(() => {
       })
       .catch((err) => console.log(`Ошибка при загрузке информации о пользователе: ${err}`));
     }
-}, [loggedIn]);
+}, [loggedIn, token]);
 
 // Регистрация
 function handleRegister(password, email) {
@@ -106,12 +110,12 @@ function handleLogin(password, email) {
       setLoggedIn(true);
       setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
       setEmail(data.email);
+      setToken(data.token);
       history.push('/');
     })
     .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))
   setInfoTooltipOpen(true);
 }
-
 
   // Выход
   function handleSignOut() {
@@ -125,15 +129,55 @@ function handleLogin(password, email) {
   React.useEffect(() => {
     if (loggedIn) {
       api
-        .getInitialCards()
+        .getInitialCards(token)
         .then((cardData) => {
           setCards(cardData);
         })
         .catch((err) => console.log(`Ошибка при загрузке карточек: ${err}`));
       }
-  }, [loggedIn]);
+  }, [loggedIn, token]);
 
+  //Обновить аватар
+  function handleUpdateAvatar(newAvatar) {
+      setLoading(true);
+      api
+        .setUserAvatar(token, newAvatar)
+        .then((res) => {
+          setCurrentUser(res);
+          closeAllPopups();
+        })
+        .catch((err) => console.log(`Ошибка при обновлении аватара: ${err}`))
+        .finally(() => setLoading(false));
 
+  }
+  //Обновить данные пользователя
+  function handleUpdateUser(userData) {
+      setLoading(true);
+      api
+        .updateUserInfo(token, userData)
+        .then((newUser) => {
+          setCurrentUser(newUser);
+          closeAllPopups();
+        })
+        .catch((err) => `Ошибка при обновлении информации о пользователе: ${err}`)
+        .finally(() => setLoading(false));
+
+  }
+
+  function handleAddPlace(card) {
+      setLoading(true);
+      api
+        .postNewCard(token, card)
+        .then((newCard) => {
+          setCards([newCard, ...cards]);
+          closeAllPopups();
+        })
+        .catch((err) =>
+          console.log(`Ошибка при добавлении новой карточки: ${err}`)
+        )
+        .finally(() => setLoading(false));
+
+  }
 
   //Открыть попап аватара
   function handleEditAvatarClick() {
@@ -157,7 +201,7 @@ function handleLogin(password, email) {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
     api
-      .changeLikeCardStatus(card._id, !isLiked)
+      .changeLikeCardStatus(token, card._id, !isLiked)
       .then((newCard) => {
         // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
       const newCards = cards.map((c) => c._id === card._id ? newCard : c);
@@ -171,7 +215,7 @@ function handleLogin(password, email) {
    //Удалить карточку после подтверждения
    function handleConfirm() {
     api
-      .deleteCard(cardToDelete._id)
+      .deleteCard(token, cardToDelete._id)
       .then(() =>{
         setCards(cards.filter((item) => item !== cardToDelete))
         closeAllPopups();
@@ -179,6 +223,7 @@ function handleLogin(password, email) {
       .catch((err) => console.log(`Ошибка при удалении карточки: ${err}`));
 
   }
+
   //Кликнуть на удаление карточки
   function handleCardDelete(card) {
     setConfirmPopupOpen(true);
@@ -193,48 +238,6 @@ function handleLogin(password, email) {
     setConfirmPopupOpen(false);
     setInfoTooltipOpen(false)
   }
-  //Обновить аватар
-  function handleUpdateAvatar(newAvatar) {
-      setLoading(true);
-      api
-        .setUserAvatar(newAvatar)
-        .then((res) => {
-          setCurrentUser(res);
-          closeAllPopups();
-        })
-        .catch((err) => console.log(`Ошибка при обновлении аватара: ${err}`))
-        .finally(() => setLoading(false));
-
-  }
-  //Обновить данные пользователя
-  function handleUpdateUser(userData) {
-      setLoading(true);
-      api
-        .updateUserInfo(userData)
-        .then((newUser) => {
-          setCurrentUser(newUser);
-          closeAllPopups();
-        })
-        .catch((err) => `Ошибка при обновлении информации о пользователе: ${err}`)
-        .finally(() => setLoading(false));
-
-  }
-
-  function handleAddPlace(card) {
-      setLoading(true);
-      api
-        .postNewCard(card)
-        .then((newCard) => {
-          setCards([newCard, ...cards]);
-          closeAllPopups();
-        })
-        .catch((err) =>
-          console.log(`Ошибка при добавлении новой карточки: ${err}`)
-        )
-        .finally(() => setLoading(false));
-
-  }
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
         <div className="root">

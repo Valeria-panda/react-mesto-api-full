@@ -7,14 +7,11 @@ const ForbiddenError = require('../errors/forbiddenError');
 module.exports.getCards = (req, res) => {
   Card.find({})
     // .populate('user')
-    .then((cards) => res.send({ data: cards }))
+    .then((card) => res.send(card))
     .catch((err) => res.status(500).send({ message: `На сервере произошла ошибка: ${err.message}` }));
 };
 
 module.exports.createCard = (req, res, next) => {
-  // const { name, link } = req.body;
-
-  // Card.create({ name, link, owner: req.user._id })
   module.exports.createCard = (req, res) => Card.create({
     name: req.body.name,
     link: req.body.link,
@@ -23,7 +20,7 @@ module.exports.createCard = (req, res, next) => {
     .catch((err) => {
       throw new BadRequestError({ message: `Указаны некорректные данные при создании карточки: ${err.message}` });
     })
-    .then((card) => res.status(201).send({ data: card }))
+    .then((card) => res.status(201).send(card))
     .catch(next);
 };
 
@@ -39,7 +36,7 @@ module.exports.deleteCard = (req, res, next) => {
       }
       Card.findByIdAndDelete(req.params._id)
         .then((cardData) => {
-          res.send({ data: cardData });
+          res.send(cardData);
         })
         .catch(next);
     })
@@ -54,7 +51,7 @@ module.exports.likeCard = (req, res, next) => {
     .catch(() => {
       throw new NotFoundError({ message: 'Нет карточки с таким id' });
     })
-    .then((likes) => res.send({ data: likes }))
+    .then((likes) => res.send(likes))
     .catch(next);
 };
 
@@ -66,7 +63,7 @@ module.exports.dislikeCard = (req, res, next) => {
     .catch(() => {
       throw new NotFoundError({ message: 'Нет карточки с таким id' });
     })
-    .then((likes) => res.send({ data: likes }))
+    .then((likes) => res.send(likes))
     .catch(next);
 };
 
