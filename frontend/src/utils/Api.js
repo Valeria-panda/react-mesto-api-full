@@ -1,10 +1,10 @@
 import { apiOptions } from './constant';
 
 class Api {
-  constructor(options) {
-    this._url = options.baseUrl;
-    this._headers = options.headers;
-    this._credentials = options.credentials;
+  constructor(apiOptions) {
+    this._url = apiOptions.baseUrl;
+    this._headers = apiOptions.headers;
+    this._credentials = apiOptions.credentials;
   }
 
  //Отправить запрос
