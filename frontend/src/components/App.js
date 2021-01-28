@@ -56,116 +56,80 @@ function App() {
 
   const escape = require('escape-html');
 
-  // поучить данные пользователя
-  React.useEffect(() => {
-   api
+
+
+  // Проверить токен. нам больше не надо так как токен проверяют куки
+  // React.useEffect(() => {
+  //   const jwt = localStorage.getItem('jwt');
+  //   if (jwt) {
+  //     api.getContent(jwt)
+  //       .then((res) => {
+  //         setLoggedIn(true);
+  //         setEmail(res.data.email);
+  //         history.push('/');
+  //       })
+  //       .catch(err => console.log(err));
+  //   }
+  // }, [history]);
+
+
+// поучить данные пользователя
+React.useEffect(() => {
+  if (loggedIn) {
+    api
       .getUserInfo()
       .then((res) => {
+        console.log(res)
         setCurrentUser(res);
+        console.log(currentUser)
       })
       .catch((err) => console.log(`Ошибка при загрузке информации о пользователе: ${err}`));
-  }, []);
+    }
+}, [loggedIn]);
+
+// Регистрация
+function handleRegister(password, email) {
+  auth.register(escape(password), email)
+    .then(() => {
+      setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
+    })
+    .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
+  setInfoTooltipOpen(true);
+}
+// Авторизация
+function handleLogin(password, email) {
+  auth.authorize(escape(password), email)
+    .then((data) => {
+      setLoggedIn(true);
+      setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
+      history.push('/');
+    })
+    .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))
+  setInfoTooltipOpen(true);
+}
 
 
-  // Проверить токен
+  // Выход
+  function handleSignOut() {
+    setLoggedIn(false);
+    localStorage.removeItem('jwt');
+    setEmail('');
+    history.push('/sign-in');
+  }
+
+  // Получить карточки
   React.useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      api.getContent(jwt)
-        .then((res) => {
-          setLoggedIn(true);
-          setEmail(res.data.email);
-          history.push('/');
-        })
-        .catch(err => console.log(err));
-    }
-  }, [history]);
-
-  // Регистрация
-  function handleRegister(password, email) {
-    auth.register(escape(password), email)
-      .then(() => {
-        setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
-      })
-      .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
-    setInfoTooltipOpen(true);
-  }
-  // Авторизация
-  function handleLogin(password, email) {
-    auth.authorize(escape(password), email)
-      .then((data) => {
-        auth.getContent(data)
-          .then((res) => {
-            setEmail(res.data.email);
-          })
-          .catch(err => console.log(err));
-        setLoggedIn(true);
-        setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
-        history.push('/');
-      })
-      .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))
-    setInfoTooltipOpen(true);
-  }
-
-
-    // Выход
-    function handleSignOut() {
-      setLoggedIn(false);
-      localStorage.removeItem('jwt');
-      setEmail('');
-      history.push('/sign-in');
-    }
-  
-    // Получить карточки
-    React.useEffect(() => {
+    if (loggedIn) {
       api
         .getInitialCards()
         .then((cardData) => {
           setCards(cardData);
         })
         .catch((err) => console.log(`Ошибка при загрузке карточек: ${err}`));
-    }, []);
-
-// // получить данные карточек
-//   React.useEffect(() => {
-//     if (loggedIn) {
-//       auth
-//       .getInitialCards()
-//       .then((initialCards) => setCards(initialCards.reverse()))
-//       .catch((err) => console.log(err));
-//       }
-//       return;
-//   }, [loggedIn]);
+      }
+  }, [loggedIn]);
 
 
-  // // // Авторизация
-  // function handleLogin(password, email) {
-  //   auth.authorize(password, email)
-  //     .then((data) => {
-  //       auth
-  //        .getUserInfo(data)
-  //         .then((data) => {
-  //           setEmail(data.email);
-  //           setCurrentUser(data.user);
-  //           // setCards(data);
-  //         })
-  //         .catch(err => console.log(err));
-  //         setLoggedIn(true);
-  //         setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
-  //         history.push('/');
-  //     })
-  //     .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
-  //     //  setInfoTooltipOpen(true);
-  // }
- 
-  // function handleSignOut() {
-  //   auth.signout()
-  //     .then(() => {
-  //       setLoggedIn(false);
-  //       setCurrentUser({});
-  //     })
-  //     .catch((err) => console.log(err));
-  // }
 
   //Открыть попап аватара
   function handleEditAvatarClick() {

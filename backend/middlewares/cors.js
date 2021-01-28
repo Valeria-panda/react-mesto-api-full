@@ -4,7 +4,7 @@ module.exports.corsConfig = {
     'http://advent.students.nomoredomains.rocks',
     'https://www.advent.students.nomoredomains.rocks',
     'http://www.advent.students.nomoredomains.rocks',
-    // 'http://localhost:300',
+    // 'http://localhost:3001',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,

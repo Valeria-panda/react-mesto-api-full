@@ -1,5 +1,5 @@
-import BadRequestError from '../errors/badRequestError';
-import NotAuthorizedError from '../errors/notAuthorizedError';
+import BadRequestError from '../errors/BadRequestError';
+import UnauthorizedError from '../errors/UnauthorizedError';
 
 
 export const BASE_URL = 'https://api.advent.students.nomoredomains.rocks';
@@ -11,6 +11,7 @@ export const register = (password, email) => fetch(`${BASE_URL}/signup`, {
   headers: {
     'Content-Type': 'application/json',
   },
+  сredentials: 'include',
   body: JSON.stringify({ password, email }),
 })
   .then((res) => {
@@ -25,7 +26,7 @@ export const register = (password, email) => fetch(`${BASE_URL}/signup`, {
         });
     }
     return res.json();
-  });
+});
 
 // Отправляем запрос за авторизацию
 export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
@@ -33,6 +34,7 @@ export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
   headers: {
     'Content-Type': 'application/json',
   },
+  сredentials: 'include',
   body: JSON.stringify({ password, email }),
 })
   .then((res) => {
@@ -40,32 +42,26 @@ export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
       throw new BadRequestError('Не передано одно из полей');
     }
     else if (res.status === 401) {
-      throw new NotAuthorizedError('Пользователь с таким email не найден');
+      throw new UnauthorizedError('Пользователь с таким email не найден');
     }
     return res.json();
-  })
-  .then((data) => {
-    if (data.token) {
-      localStorage.setItem('jwt', data.token);
-      return data.token;
-    }
-  });
+});
 
 // Отправляем запрос за получение токена
-export const getContent = (token) => fetch(`${BASE_URL}/users/me`, {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
-  },
-})
-  .then((res) => {
-    if (!res.ok) {
-      return res.json()
-        .then((err) => {
-          throw new NotAuthorizedError(err.message);
-        });
-    }
-    return res.json()
-  })
-  .then((data) => data);
+// export const getContent = (token) => fetch(`${BASE_URL}/users/me`, {
+//   method: 'GET',
+//   headers: {
+//     'Content-Type': 'application/json',
+//     'Authorization': `Bearer ${token}`,
+//   },
+// })
+//   .then((res) => {
+//     if (!res.ok) {
+//       return res.json()
+//         .then((err) => {
+//           throw new UnauthorizedError(err.message);
+//         });
+//     }
+//     return res.json()
+//   })
+//   .then((data) => data);

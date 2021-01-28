@@ -4,35 +4,42 @@ class Api {
   constructor(options) {
     this._url = options.baseUrl;
     this._headers = options.headers;
+    this._credentials = options.credentials;
   }
 
-  //Отправить запрос
-  _sendRequest(path, parameters) {
-    return fetch(`${this._url}${path}`, parameters).then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(res.status);
-    });
-  }
+ //Отправить запрос
+ _sendRequest(path, parameters) {
+  return fetch(`${this._url}${path}`, parameters).then((res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(res.status);
+  });
+}
 
   //Получить данные пользователя
   getUserInfo() {
     return this._sendRequest(`users/me`, {
       headers: this._headers,
+      credentials: this._credentials,
     });
   }
 
-  //Получить карточки
-  getInitialCards() {
-    return this._sendRequest(`cards`, { headers: this._headers });
+   //Получить карточки
+   getInitialCards() {
+    return this._sendRequest(`cards`, {
+      headers: this._headers,
+      credentials: this._credentials,
+    });
   }
 
+  //Обновить информацию о пользователе
   //Обновить информацию о пользователе
   updateUserInfo(newUserInfo) {
     return this._sendRequest(`users/me`, {
       method: 'PATCH',
       headers: this._headers,
+      credentials: this._credentials,
       body: JSON.stringify({
         name: newUserInfo.name,
         about: newUserInfo.about,
@@ -49,6 +56,7 @@ class Api {
         link: newCard.link,
       }),
       headers: this._headers,
+      credentials: this._credentials,
     });
   }
 
@@ -56,6 +64,7 @@ class Api {
     return this._sendRequest(`cards/likes/${id}`, {
       method: `${isLiked ? 'PUT' : 'DELETE'}`,
       headers: this._headers,
+      credentials: this._credentials,
     });
   }
 
@@ -64,8 +73,10 @@ class Api {
     return this._sendRequest(`cards/${id}`, {
       method: 'DELETE',
       headers: this._headers,
+      credentials: this._credentials,
     });
   }
+
 
   //Обновить аватар
   updateUserAvatar(avatar) {
@@ -73,6 +84,7 @@ class Api {
       method: 'PATCH',
       body: JSON.stringify({ avatar: avatar.url }),
       headers: this._headers,
+      credentials: this._credentials,
     });
   }
 }
