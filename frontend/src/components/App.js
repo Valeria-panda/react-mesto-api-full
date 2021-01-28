@@ -106,11 +106,17 @@ function handleRegister(password, email) {
 function handleLogin(password, email) {
   auth.authorize(escape(password), email)
     .then((data) => {
-      setCurrentUser(data);
+      setToken(data.token);
+      setCurrentUser({
+        name:data.name,
+        about:data.about,
+        avatar:data.avatar
+      });
+      setEmail(data.email);
       setLoggedIn(true);
       setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
-      setEmail(data.email);
-      setToken(data.token);
+
+
       history.push('/');
     })
     .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))

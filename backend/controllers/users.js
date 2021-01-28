@@ -17,7 +17,7 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-  User.findById(req.params._id)
+  User.findById(req.user._id)
     .orFail()
     .catch(() => {
       throw new NotFoundError({ message: 'Нет пользователя с таким id' });
@@ -114,7 +114,7 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
-  User.findById(req.params.id)
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Нет пользователя с таким id');
