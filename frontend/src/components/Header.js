@@ -7,8 +7,8 @@ import AuthInfo from './AuthInfo';
 function Header
   ({
     loggedIn, email, signOut
-  }) 
- 
+  })
+
   {
 
   const { pathname } = useLocation();
