@@ -102,11 +102,12 @@ module.exports.login = (req, res, next) => {
           httpOnly: true,
           sameSite: true,
         })
-        .send({
-          data: {
-            name: user.name, about: user.about, avatar: user.avatar, email: user.email,
-          },
-        });
+        .send({ name: user.name, about: user.about, avatar: user.avatar, email: user.email, token, });
+        // .send({
+        //   data: {
+        //     name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+        //   },
+        // });
     })
     .catch(next);
 };
