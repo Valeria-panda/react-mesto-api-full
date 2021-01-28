@@ -102,8 +102,10 @@ function handleRegister(password, email) {
 function handleLogin(password, email) {
   auth.authorize(escape(password), email)
     .then((data) => {
+      setCurrentUser(data);
       setLoggedIn(true);
       setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
+      setEmail(data.email);
       history.push('/');
     })
     .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))

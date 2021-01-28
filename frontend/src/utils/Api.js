@@ -19,7 +19,7 @@ class Api {
 
   //Получить данные пользователя
   getUserInfo() {
-    return this._sendRequest(`users/me`, {
+    return this._sendRequest(`/users/me`, {
       headers: this._headers,
       credentials: this._credentials,
     });
@@ -27,16 +27,16 @@ class Api {
 
    //Получить карточки
    getInitialCards() {
-    return this._sendRequest(`cards`, {
+    return this._sendRequest(`/cards`, {
       headers: this._headers,
       credentials: this._credentials,
     });
   }
 
-  //Обновить информацию о пользователе
+
   //Обновить информацию о пользователе
   updateUserInfo(newUserInfo) {
-    return this._sendRequest(`users/me`, {
+    return this._sendRequest(`/users/me`, {
       method: 'PATCH',
       headers: this._headers,
       credentials: this._credentials,
@@ -49,7 +49,7 @@ class Api {
 
   //Добавить новую карточку
   postNewCard(newCard) {
-    return this._sendRequest(`cards`, {
+    return this._sendRequest(`/cards`, {
       method: 'POST',
       body: JSON.stringify({
         name: newCard.title,
@@ -61,7 +61,7 @@ class Api {
   }
 
   changeLikeCardStatus(id, isLiked) {
-    return this._sendRequest(`cards/likes/${id}`, {
+    return this._sendRequest(`/cards/likes/${id}`, {
       method: `${isLiked ? 'PUT' : 'DELETE'}`,
       headers: this._headers,
       credentials: this._credentials,
@@ -70,7 +70,7 @@ class Api {
 
   //Удалить фото
   deleteCard(id) {
-    return this._sendRequest(`cards/${id}`, {
+    return this._sendRequest(`/cards/${id}`, {
       method: 'DELETE',
       headers: this._headers,
       credentials: this._credentials,
@@ -80,7 +80,7 @@ class Api {
 
   //Обновить аватар
   updateUserAvatar(avatar) {
-    return this._sendRequest(`users/me/avatar`, {
+    return this._sendRequest(`/users/me/avatar`, {
       method: 'PATCH',
       body: JSON.stringify({ avatar: avatar.url }),
       headers: this._headers,
