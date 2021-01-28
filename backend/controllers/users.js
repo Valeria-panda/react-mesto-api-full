@@ -102,7 +102,11 @@ module.exports.login = (req, res, next) => {
           httpOnly: true,
           sameSite: true,
         })
-        .send({ message: 'Успешная авторизация' });
+        .send({
+          data: {
+            name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+          },
+        });
     })
     .catch(next);
 };

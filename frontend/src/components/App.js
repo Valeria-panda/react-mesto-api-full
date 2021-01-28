@@ -92,16 +92,20 @@ function handleRegister(password, email) {
   auth.register(escape(password), email)
     .then(() => {
       setMessage({ iconPath: resolvePath, text: 'Вы успешно зарегистрировались!' });
+      history.push('/signin');
     })
     .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }));
   setInfoTooltipOpen(true);
 }
+
 // Авторизация
 function handleLogin(password, email) {
   auth.authorize(escape(password), email)
     .then((data) => {
+      setCurrentUser(data);
       setLoggedIn(true);
       setMessage({ iconPath: resolvePath, text: 'Вы успешно вошли в приложение!' });
+      setEmail(data.email);
       history.push('/');
     })
     .catch((err) => setMessage({ iconPath: rejectPath, text: err.message }))
@@ -114,7 +118,7 @@ function handleLogin(password, email) {
     setLoggedIn(false);
     localStorage.removeItem('jwt');
     setEmail('');
-    history.push('/sign-in');
+    history.push('/signin');
   }
 
   // Получить карточки
