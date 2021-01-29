@@ -52,7 +52,7 @@ function App() {
     text: ''
   });
 
-  // const [token, setToken]= useState('');
+  const [token, setToken]= useState('');
 
 
   const location = useLocation();
@@ -68,9 +68,9 @@ function App() {
     if (jwt) {
       auth.getContent(jwt)
         .then((res) => {
+          setToken(jwt);
           setLoggedIn(true);
-          // setEmail(res.data.email);
-          // history.push('/');
+          history.push('/');
         })
         .catch(err => console.log(err));
     }
@@ -81,7 +81,7 @@ function App() {
 React.useEffect(() => {
   if (loggedIn) {
     api
-      .getUserInfo()
+      .getUserInfo(token)
       .then((res) => {
         console.log(res)
         setCurrentUser(res);
@@ -89,7 +89,7 @@ React.useEffect(() => {
       })
       .catch((err) => console.log(`Ошибка при загрузке информации о пользователе: ${err}`));
     }
-}, [loggedIn]);
+}, [loggedIn, token]);
 
 // Регистрация
 function handleRegister(password, email) {
@@ -109,7 +109,7 @@ function handleLogin(password, email) {
 
       localStorage.setItem('jwt', data.token);
 
-      // setToken(data.token);
+      setToken(data.token);
       setCurrentUser({
         name:data.name,
         about:data.about,
@@ -138,20 +138,20 @@ function handleLogin(password, email) {
   React.useEffect(() => {
     if (loggedIn) {
       api
-        .getInitialCards()
+        .getInitialCards(token)
         .then((cardData) => {
           setCards(cardData);
         })
         .catch((err) => console.log(`Ошибка при загрузке карточек: ${err}`));
       }
-  }, [loggedIn]);
+  }, [loggedIn, token]);
 
   //Обновить аватар
   function handleUpdateAvatar(newAvatar) {
       setLoading(true);
       api
         // .setUserAvatar(token, newAvatar)
-        .updateUserAvatar(newAvatar)
+        .updateUserAvatar(token, newAvatar)
         .then((res) => {
           setCurrentUser(res);
           closeAllPopups();
@@ -164,7 +164,7 @@ function handleLogin(password, email) {
   function handleUpdateUser(userData) {
       setLoading(true);
       api
-        .updateUserInfo(userData)
+        .updateUserInfo(token, userData)
         .then((newUser) => {
           setCurrentUser(newUser);
           closeAllPopups();
@@ -177,7 +177,7 @@ function handleLogin(password, email) {
   function handleAddPlace(card) {
     setLoading(true)
       api
-        .postNewCard(card)
+        .postNewCard(token, card)
         .then((newCard) => {
           setCards([newCard, ...cards]);
           closeAllPopups();
@@ -211,7 +211,7 @@ function handleLogin(password, email) {
     const isLiked = card.likes.some(i => i === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
     api
-      .changeLikeCardStatus(card._id, !isLiked)
+      .changeLikeCardStatus(token, card._id, !isLiked)
       .then((newCard) => {
         // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
       const newCards = cards.map((c) => c._id === card._id ? newCard : c);
@@ -225,7 +225,7 @@ function handleLogin(password, email) {
    //Удалить карточку после подтверждения
    function handleConfirm() {
     api
-      .deleteCard(cardToDelete._id)
+      .deleteCard(token, cardToDelete._id)
       .then(() =>{
         setCards(cards.filter((item) => item !== cardToDelete))
         closeAllPopups();
