@@ -71,10 +71,12 @@ function App() {
           setToken(jwt);
           setLoggedIn(true);
           history.push('/');
+          setEmail(res.email)
         })
+
         .catch(err => console.log(err));
     }
-  }, []);
+  }, [history]);
 
 
 // поучить данные пользователя

@@ -89,6 +89,7 @@ class Api {
     });
   }
 
+
   //Обновить аватар
   updateUserAvatar(token, newUserAvatar) {
     return this._sendRequest(`users/me/avatar`, {
