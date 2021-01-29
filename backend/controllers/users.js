@@ -22,9 +22,7 @@ module.exports.getCurrentUser = (req, res, next) => {
     .catch(() => {
       throw new NotFoundError({ message: 'Нет пользователя с таким id' });
     })
-    // .then((user) => res.send({ data: user }))
     .then((user) => res.send(user))
-    // .then((user) => res.send({ name: user.name, about: user.about, avatar: user.avatar, email: user.email, }))
     .catch(next);
 };
 
@@ -42,11 +40,6 @@ module.exports.createUser = (req, res, next) => {
         throw new ConflictError({ message: 'Пользователь с таким email уже зарегистрирован' });
       } else next(err);
     })
-    // .then((user) => res.status(201).send({
-    //   data: {
-    //     name: user.name, about: user.about, avatar, email: user.email,
-    //   },
-    // }))
     .then((user) => res.send({ name: user.name, about: user.about, avatar: user.avatar, email: user.email, }))
     .catch(next);
 };
@@ -68,7 +61,6 @@ module.exports.updateUser = (req, res, next) => {
       throw new BadRequestError({ message: `Указаны некорректные данные при обновлении пользователя: ${err.message}` });
     })
     .then((user) => res.send(user))
-    // .then((user) => res.send({ name: user.name, about: user.about, avatar: user.avatar, email: user.email, }))
     .catch(next);
 };
 
@@ -119,9 +111,7 @@ module.exports.getUserById = (req, res, next) => {
       if (!user) {
         throw new NotFoundError('Нет пользователя с таким id');
       }
-      // res.send(user);
       res.send(user);
-      // res.send({ name: user.name, about: user.about, avatar: user.avatar, email: user.email, });
     })
     .catch(next);
 };

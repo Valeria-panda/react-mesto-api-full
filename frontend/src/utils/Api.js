@@ -57,14 +57,14 @@ class Api {
   postNewCard(token, newCard) {
     return this._sendRequest(`cards`, {
       method: 'POST',
-      body: JSON.stringify({
-        name: newCard.name,
-        link: newCard.link,
-      }),
       headers: {
         ...this._headers,
         authorization: `Bearer ${token}`
       },
+      body: JSON.stringify({
+        name: newCard.name,
+        link: newCard.link,
+      }),
     });
   }
 

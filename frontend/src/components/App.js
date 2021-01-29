@@ -171,10 +171,10 @@ function handleLogin(password, email) {
 
   }
 
-  function handleAddPlaceClick(card) {
-
+  function handleAddPlaceClick(cards) {
+    setLoading(true)
       api
-        .postNewCard(token, card)
+        .postNewCard(token, cards)
         .then((newCard) => {
           setCards([newCard, ...cards]);
           closeAllPopups();
@@ -302,9 +302,10 @@ function handleLogin(password, email) {
               isLoading={isLoading}
             />
             <AddPlacePopup
+              onAddPlace={handleAddPlaceClick}
               isOpen={isAddPlacePopupOpen}
               onClose={closeAllPopups}
-              onAddPlace={handleAddPlaceClick}
+
             />
             <ConfirmPopup
               isOpen={isConfirmPopupOpen}

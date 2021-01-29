@@ -54,6 +54,7 @@ export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
 //     'Content-Type': 'application/json',
 //     'Authorization': `Bearer ${token}`,
 //   },
+
 // })
 //   .then((res) => {
 //     if (!res.ok) {

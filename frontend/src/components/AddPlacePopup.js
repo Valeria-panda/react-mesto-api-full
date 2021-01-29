@@ -14,21 +14,21 @@ function AddPlacePopup({isOpen,onClose, onAddPlace, isLoading }) {
   }, [isOpen]);
 
   function handleChangeCardName(evt) {
-    if(evt.target.name === 'name')
-      setName(evt.target.value)
-      // setName(
-      //   evt.target.value
-      //     .replace(/^\s/, '')
-      //     .replace('  ', ' '));
+    // if(evt.target.name === 'name')
+    //   setName(evt.target.value)
+      setName(
+        evt.target.value
+          .replace(/^\s/, '')
+          .replace('  ', ' '));
 
   }
   function handleChangeCardLink(evt) {
-    if(evt.target.name === 'link')
-    setLink(evt.target.value);
-      // setLink(
-      //   evt.target.value
-      //     .replace(/^\s/, '')
-      //     .replace('  ', ' '));
+    // if(evt.target.name === 'link')
+    // setLink(evt.target.value);
+      setLink(
+        evt.target.value
+          .replace(/^\s/, '')
+          .replace('  ', ' '));
   }
 
   function handleSubmit(evt) {
