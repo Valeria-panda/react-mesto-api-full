@@ -69,12 +69,12 @@ function App() {
       auth.getContent(jwt)
         .then((res) => {
           setLoggedIn(true);
-          setEmail(res.data.email);
-          history.push('/');
+          // setEmail(res.data.email);
+          // history.push('/');
         })
         .catch(err => console.log(err));
     }
-  }, [history]);
+  }, []);
 
 
 // поучить данные пользователя
