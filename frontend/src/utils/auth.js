@@ -48,21 +48,21 @@ export const authorize = (password, email) => fetch(`${BASE_URL}/signin`, {
 });
 
 // Отправляем запрос за получение токена
-// export const getContent = (token) => fetch(`${BASE_URL}/users/me`, {
-//   method: 'GET',
-//   headers: {
-//     'Content-Type': 'application/json',
-//     'Authorization': `Bearer ${token}`,
-//   },
+export const getContent = (token) => fetch(`${BASE_URL}/users/me`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  },
 
-// })
-//   .then((res) => {
-//     if (!res.ok) {
-//       return res.json()
-//         .then((err) => {
-//           throw new UnauthorizedError(err.message);
-//         });
-//     }
-//     return res.json()
-//   })
-//   .then((data) => data);
+})
+  .then((res) => {
+    if (!res.ok) {
+      return res.json()
+        .then((err) => {
+          throw new UnauthorizedError(err.message);
+        });
+    }
+    return res.json()
+  })
+  .then((data) => data);

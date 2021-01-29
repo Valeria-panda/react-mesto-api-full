@@ -52,7 +52,7 @@ function App() {
     text: ''
   });
 
-  const [token, setToken]= useState('');
+  // const [token, setToken]= useState('');
 
 
   const location = useLocation();
@@ -62,26 +62,26 @@ function App() {
 
 
 
-  // Проверить токен. нам больше не надо так как токен проверяют куки
-  // React.useEffect(() => {
-  //   const jwt = localStorage.getItem('jwt');
-  //   if (jwt) {
-  //     api.getContent(jwt)
-  //       .then((res) => {
-  //         setLoggedIn(true);
-  //         setEmail(res.data.email);
-  //         history.push('/');
-  //       })
-  //       .catch(err => console.log(err));
-  //   }
-  // }, [history]);
+  // Проверить токен.
+  React.useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      auth.getContent(jwt)
+        .then((res) => {
+          setLoggedIn(true);
+          setEmail(res.data.email);
+          history.push('/');
+        })
+        .catch(err => console.log(err));
+    }
+  }, [history]);
 
 
 // поучить данные пользователя
 React.useEffect(() => {
   if (loggedIn) {
     api
-      .getUserInfo(token)
+      .getUserInfo()
       .then((res) => {
         console.log(res)
         setCurrentUser(res);
@@ -89,7 +89,7 @@ React.useEffect(() => {
       })
       .catch((err) => console.log(`Ошибка при загрузке информации о пользователе: ${err}`));
     }
-}, [loggedIn, token]);
+}, [loggedIn]);
 
 // Регистрация
 function handleRegister(password, email) {
@@ -106,7 +106,10 @@ function handleRegister(password, email) {
 function handleLogin(password, email) {
   auth.authorize(escape(password), email)
     .then((data) => {
-      setToken(data.token);
+
+      localStorage.setItem('jwt', data.token);
+
+      // setToken(data.token);
       setCurrentUser({
         name:data.name,
         about:data.about,
@@ -135,20 +138,20 @@ function handleLogin(password, email) {
   React.useEffect(() => {
     if (loggedIn) {
       api
-        .getInitialCards(token)
+        .getInitialCards()
         .then((cardData) => {
           setCards(cardData);
         })
         .catch((err) => console.log(`Ошибка при загрузке карточек: ${err}`));
       }
-  }, [loggedIn, token]);
+  }, [loggedIn]);
 
   //Обновить аватар
   function handleUpdateAvatar(newAvatar) {
       setLoading(true);
       api
         // .setUserAvatar(token, newAvatar)
-        .updateUserAvatar(token, newAvatar)
+        .updateUserAvatar(newAvatar)
         .then((res) => {
           setCurrentUser(res);
           closeAllPopups();
@@ -161,7 +164,7 @@ function handleLogin(password, email) {
   function handleUpdateUser(userData) {
       setLoading(true);
       api
-        .updateUserInfo(token, userData)
+        .updateUserInfo(userData)
         .then((newUser) => {
           setCurrentUser(newUser);
           closeAllPopups();
@@ -174,7 +177,7 @@ function handleLogin(password, email) {
   function handleAddPlace(card) {
     setLoading(true)
       api
-        .postNewCard(token, card)
+        .postNewCard(card)
         .then((newCard) => {
           setCards([newCard, ...cards]);
           closeAllPopups();
@@ -205,10 +208,10 @@ function handleLogin(password, email) {
   }
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    const isLiked = card.likes.some(i => i === currentUser._id);
     // Отправляем запрос в API и получаем обновлённые данные карточки
     api
-      .changeLikeCardStatus(token, card._id, !isLiked)
+      .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
         // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
       const newCards = cards.map((c) => c._id === card._id ? newCard : c);
@@ -222,7 +225,7 @@ function handleLogin(password, email) {
    //Удалить карточку после подтверждения
    function handleConfirm() {
     api
-      .deleteCard(token, cardToDelete._id)
+      .deleteCard(cardToDelete._id)
       .then(() =>{
         setCards(cards.filter((item) => item !== cardToDelete))
         closeAllPopups();

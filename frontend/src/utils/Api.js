@@ -19,32 +19,32 @@ class Api {
   }
 
   //Получить данные пользователя
-  getUserInfo(token) {
+  getUserInfo() {
     return this._sendRequest(`users/me`, {
       headers: {
         ...this._headers,
-        authorization: `Bearer ${token}`
+        // authorization: `Bearer ${token}`
       },
     });
   }
 
   //Получить карточки
-  getInitialCards(token) {
+  getInitialCards() {
     return this._sendRequest(`cards`, {
       headers: {
         ...this._headers,
-        authorization: `Bearer ${token}`
+        // authorization: `Bearer ${token}`
       },
     });
   }
 
   //Обновить информацию о пользователе
-  updateUserInfo(token, newUserInfo) {
+  updateUserInfo(newUserInfo) {
     return this._sendRequest(`users/me`, {
       method: 'PATCH',
       headers: {
         ...this._headers,
-        authorization: `Bearer ${token}`
+        // authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
         name: newUserInfo.name,
@@ -54,12 +54,12 @@ class Api {
   }
 
   //Добавить новую карточку
-  postNewCard(token, newCard) {
+  postNewCard(newCard) {
     return this._sendRequest(`cards`, {
       method: 'POST',
       headers: {
         ...this._headers,
-        authorization: `Bearer ${token}`
+        // authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
         name: newCard.name,
@@ -68,35 +68,35 @@ class Api {
     });
   }
 
-  changeLikeCardStatus(token, id, isLiked) {
+  changeLikeCardStatus(id, isLiked) {
     return this._sendRequest(`cards/${id}/likes`, {
       method: `${isLiked ? 'PUT' : 'DELETE'}`,
       headers: {
         ...this._headers,
-        authorization: `Bearer ${token}`
+        // authorization: `Bearer ${token}`
       },
     });
   }
 
   //Удалить фото
-  deleteCard(token, id) {
+  deleteCard(id) {
     return this._sendRequest(`cards/${id}`, {
       method: 'DELETE',
       headers: {
         ...this._headers,
-        authorization: `Bearer ${token}`
+        // authorization: `Bearer ${token}`
       },
     });
   }
 
   //Обновить аватар
-  updateUserAvatar(token, newUserAvatar) {
+  updateUserAvatar(newUserAvatar) {
     return this._sendRequest(`users/me/avatar`, {
       method: 'PATCH',
       body: JSON.stringify({ avatar: newUserAvatar.avatar }),
       headers: {
         ...this._headers,
-        authorization: `Bearer ${token}`
+        // authorization: `Bearer ${token}`
       },
     });
   }
