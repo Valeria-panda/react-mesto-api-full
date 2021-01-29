@@ -7,21 +7,28 @@ function AddPlacePopup({isOpen,onClose, onAddPlace, isLoading }) {
 
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
-  
+
   React.useEffect(() => {
     setName('');
     setLink('');
   }, [isOpen]);
 
   function handleChangeCardName(evt) {
-    if(evt.target.name === 'name')
-      setName(evt.target.value)
-      // : setLink(evt.target.value);
+    // if(evt.target.name === 'name')
+    //   setName(evt.target.value)
+      setName(
+        evt.target.value
+          .replace(/^\s/, '')
+          .replace('  ', ' '));
+
   }
   function handleChangeCardLink(evt) {
-    if(evt.target.name === 'link')
+    // if(evt.target.name === 'link')
       // ? setName(evt.target.value)
-      setLink(evt.target.value);
+      setLink(
+        evt.target.value
+          .replace(/^\s/, '')
+          .replace('  ', ' '));
   }
 
   function handleSubmit(evt) {
@@ -44,7 +51,7 @@ function AddPlacePopup({isOpen,onClose, onAddPlace, isLoading }) {
       isLoading={isLoading}
     >
       <label htmlFor='name' className="popup__input-label">
-            <input 
+            <input
             id='name'
             name='name'
             value={name || ''}
@@ -54,15 +61,15 @@ function AddPlacePopup({isOpen,onClose, onAddPlace, isLoading }) {
             required
             onChange={handleChangeCardName}
             className="popup__input popup__input_name"
-            type="text" 
+            type="text"
             autoComplete="off"
              />
-            <span className='popup__input-error' 
-            
+            <span className='popup__input-error'
+
           id='name-error'></span>
         </label>
-        <label htmlFor='link' className="popup__input-label">   
-          <input 
+        <label htmlFor='link' className="popup__input-label">
+          <input
           type='url'
           id='link'
           name='link'
@@ -70,9 +77,9 @@ function AddPlacePopup({isOpen,onClose, onAddPlace, isLoading }) {
           placeholder='Ссылка на картинку'
           required
           onChange={handleChangeCardLink}
-          className="popup__input popup__input_link" 
-          autoComplete="off" 
-          minLength ="2" 
+          className="popup__input popup__input_link"
+          autoComplete="off"
+          minLength ="2"
           maxLength ="200"/>
           <span className='popup__input-error' id="link-error"></span>
         </label>
