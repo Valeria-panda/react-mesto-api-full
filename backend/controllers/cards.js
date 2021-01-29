@@ -6,7 +6,7 @@ const ForbiddenError = require('../errors/forbiddenError');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
-    // .populate('user')
+    .populate('user')
     .then((card) => res.send(card))
     .catch((err) => res.status(500).send({ message: `На сервере произошла ошибка: ${err.message}` }));
 };

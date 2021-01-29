@@ -147,7 +147,8 @@ function handleLogin(password, email) {
   function handleUpdateAvatar(newAvatar) {
       setLoading(true);
       api
-        .setUserAvatar(token, newAvatar)
+        // .setUserAvatar(token, newAvatar)
+        .updateUserAvatar(token, newAvatar)
         .then((res) => {
           setCurrentUser(res);
           closeAllPopups();
@@ -171,7 +172,7 @@ function handleLogin(password, email) {
   }
 
   function handleAddPlace(card) {
-      setLoading(true);
+
       api
         .postNewCard(token, card)
         .then((newCard) => {
