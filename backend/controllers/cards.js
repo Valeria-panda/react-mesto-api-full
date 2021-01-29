@@ -20,7 +20,7 @@ module.exports.createCard = (req, res, next) => {
     .catch((err) => {
       throw new BadRequestError({ message: `Указаны некорректные данные при создании карточки: ${err.message}` });
     })
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.send(card))
     .catch(next);
 };
 

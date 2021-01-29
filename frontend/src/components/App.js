@@ -171,7 +171,7 @@ function handleLogin(password, email) {
 
   }
 
-  function handleAddPlace(card) {
+  function handleAddPlaceClick(card) {
 
       api
         .postNewCard(token, card)
@@ -304,7 +304,7 @@ function handleLogin(password, email) {
             <AddPlacePopup
               isOpen={isAddPlacePopupOpen}
               onClose={closeAllPopups}
-              onAddPlace={handleAddPlace}
+              onAddPlace={handleAddPlaceClick}
             />
             <ConfirmPopup
               isOpen={isConfirmPopupOpen}
