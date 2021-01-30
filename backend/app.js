@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
+const { corsConfig } = require('./middlewares/cors');
 const users = require('./routes/users.js');
 const cards = require('./routes/cards.js');
 const auth = require('./middlewares/auth');
@@ -13,7 +14,6 @@ const NotFoundError = require('./errors/notFoundError');
 const { login, createUser } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { validateUser, validateLogin } = require('./middlewares/requestValidation');
-const { corsConfig } = require('./middlewares/cors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
