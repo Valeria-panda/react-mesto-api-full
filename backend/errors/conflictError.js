@@ -1,4 +1,3 @@
-
 class ConflictError extends Error {
   constructor(message, ...rest) {
     super(...rest);
@@ -6,5 +5,4 @@ class ConflictError extends Error {
     this.message = message;
   }
 }
-
 module.exports = ConflictError;

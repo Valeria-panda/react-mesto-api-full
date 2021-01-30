@@ -1,4 +1,3 @@
-
 import React, { useState }  from 'react';
 import {
   Route, Switch, useLocation, Redirect, useHistory,
@@ -60,8 +59,6 @@ function App() {
 
   const escape = require('escape-html');
 
-
-
   // Проверить токен.
   React.useEffect(() => {
     const jwt = localStorage.getItem('jwt');
@@ -77,7 +74,6 @@ function App() {
         .catch(err => console.log(err));
     }
   }, [history]);
-
 
 // поучить данные пользователя
 React.useEffect(() => {
@@ -175,7 +171,7 @@ function handleLogin(password, email) {
         .finally(() => setLoading(false));
 
   }
-
+  // добавить новую карточку
   function handleAddPlace(card) {
     setLoading(true)
       api
@@ -237,10 +233,11 @@ function handleLogin(password, email) {
   }
 
   //Кликнуть на удаление карточки
-  function handleCardDelete(card) {
+  function handleCardDeleteClick(card) {
     setConfirmPopupOpen(true);
     setCardToDelete(card);
   }
+
   //Закрыть все попапы
   function closeAllPopups() {
     setEditProfilePopupOpen(false);
@@ -268,7 +265,7 @@ function handleLogin(password, email) {
                     cards={cards}
                     onCardClick={handleCardClick}
                     onCardLike={handleCardLike}
-                    onCardDelete={handleCardDelete}
+                    onCardDelete={handleCardDeleteClick}
                     onEditProfile={handleEditProfileClick}
                     onAddPlace={handleAddPlaceClick}
                     onEditAvatar={handleEditAvatarClick}

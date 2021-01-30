@@ -1,5 +1,3 @@
-
-
 const users = require('express').Router();
 const { validateId, validateUserUpdate, validateAvatar } = require('../middlewares/requestValidation');
 const {

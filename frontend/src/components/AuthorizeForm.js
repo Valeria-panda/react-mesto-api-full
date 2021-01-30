@@ -1,12 +1,11 @@
-  
 import React, { useState, useRef } from 'react';
 import Form from './Form';
 
 function AuthorizeForm({onSubmit, title, submitButtonText, path,
     loginText, loginLink, autoCompleteEmail, autoCompletePassword}){
-       
-       
-       
+
+
+
         const [email, setEmail] = useState('');
         const [password, setPassword] = useState('');
         const [emailError, setEmailError] = useState('');
@@ -16,7 +15,7 @@ function AuthorizeForm({onSubmit, title, submitButtonText, path,
 
         const emailRef = useRef();
         const passwordRef = useRef();
-      
+
         function handleChange(evt) {
           const { value } = evt.target;
           evt.target.name === 'email'
@@ -24,7 +23,7 @@ function AuthorizeForm({onSubmit, title, submitButtonText, path,
             : setPassword(value);
           validate();
         }
-      
+
         function validate() {
           setEmailError(emailRef.current.validationMessage);
           setPasswordError(passwordRef.current.validationMessage);
@@ -40,8 +39,8 @@ function AuthorizeForm({onSubmit, title, submitButtonText, path,
             setPassword('');
         }
 
-    
-    
+
+
         return(
         <section className="authorize">
             <Form
@@ -56,11 +55,11 @@ function AuthorizeForm({onSubmit, title, submitButtonText, path,
                 onSubmit={handleSubmit}
             >
             <label htmlFor="email" className="authorize__form-label">
-                <input 
+                <input
                     ref={emailRef}
-                    id="email" 
-                    type="email" 
-                    placeholder="Email" 
+                    id="email"
+                    type="email"
+                    placeholder="Email"
                     className="authorize__form-input"
                     name='email'
                     value={email || ''}
@@ -78,11 +77,11 @@ function AuthorizeForm({onSubmit, title, submitButtonText, path,
             </label>
 
             <label htmlFor="password" className="authorize__form-label">
-                <input 
+                <input
                     ref={passwordRef}
-                    id="password" 
-                    type="password" 
-                    placeholder="Пароль" 
+                    id="password"
+                    type="password"
+                    placeholder="Пароль"
                     className="authorize__form-input"
                     name='password'
                     value={password || ''}
@@ -97,7 +96,7 @@ function AuthorizeForm({onSubmit, title, submitButtonText, path,
                     {passwordError}
                 </span>
             </label>
-            
+
             </Form>
 
         </section>

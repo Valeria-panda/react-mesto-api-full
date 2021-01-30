@@ -20,12 +20,12 @@ function Form
 })
     {
         return(
-            <form 
-            name={formName} 
+            <form
+            name={formName}
             id={formId}
             onSubmit={onSubmit}
             className={`${isPopup && 'popup__form'} popup__form_type_${formName}`}>
-                
+
                 <h2 className={`${!isPopup && 'authorize__form-title'} popup__title`}>{title}</h2>
                 {children}
 

@@ -2,7 +2,7 @@ import React from 'react';
 import AuthorizeForm from './AuthorizeForm';
 
 function Login({ onLogin }){
-    
+
     function submitForm(password, email) {
         onLogin(password, email);
     }

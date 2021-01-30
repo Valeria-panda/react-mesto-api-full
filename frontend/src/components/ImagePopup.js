@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 function ImagePopup({isOpen, onClose, link, name}) {
@@ -15,4 +14,3 @@ function ImagePopup({isOpen, onClose, link, name}) {
 }
 
 export default ImagePopup;
-

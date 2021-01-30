@@ -1,8 +1,4 @@
-
 const cors = require('cors');
-
-const { corsConfig } = require('./middlewares/cors');
-
 require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
@@ -13,13 +9,13 @@ const { errors } = require('celebrate');
 const users = require('./routes/users.js');
 const cards = require('./routes/cards.js');
 const auth = require('./middlewares/auth');
+const NotFoundError = require('./errors/notFoundError');
 const { login, createUser } = require('./controllers/users');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { validateUser, validateLogin } = require('./middlewares/requestValidation');
-const NotFoundError = require('./errors/notFoundError');
+const { corsConfig } = require('./middlewares/cors');
 
 const { PORT = 3000 } = process.env;
-
 const app = express();
 
 app.use(cookieParser());

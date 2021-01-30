@@ -1,4 +1,3 @@
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -10,9 +9,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    // .then((users) => res.send({ data: users }))
     .then((user) => res.send(user))
-    // .then((user) => res.send({ name: user.name, about: user.about, avatar: user.avatar, email: user.email, }))
     .catch(next);
 };
 
@@ -40,7 +37,9 @@ module.exports.createUser = (req, res, next) => {
         throw new ConflictError({ message: 'Пользователь с таким email уже зарегистрирован' });
       } else next(err);
     })
-    .then((user) => res.send({ name: user.name, about: user.about, avatar: user.avatar, email: user.email, }))
+    .then((user) => res.send({
+      name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+    }))
     .catch(next);
 };
 
@@ -58,7 +57,7 @@ module.exports.updateUser = (req, res, next) => {
       if (err instanceof NotFoundError) {
         throw err;
       }
-      throw new BadRequestError({ message: `Указаны некорректные данные при обновлении пользователя: ${err.message}` });
+      throw new BadRequestError({ message: `Указаны некорректные данные: ${err.message}` });
     })
     .then((user) => res.send(user))
     .catch(next);
@@ -78,7 +77,7 @@ module.exports.updateAvatar = (req, res, next) => {
       if (err instanceof NotFoundError) {
         throw err;
       }
-      throw new BadRequestError({ message: `Указаны некорректные данные при обновлении аватара: ${err.message}` });
+      throw new BadRequestError({ message: `Указаны некорректные данные: ${err.message}` });
     })
     .then((newAvatar) => res.send(newAvatar))
     .catch(next);
@@ -100,7 +99,9 @@ module.exports.login = (req, res, next) => {
           httpOnly: true,
           sameSite: true,
         })
-        .send({ name: user.name, about: user.about, avatar: user.avatar, email: user.email, token, });
+        .send({
+          name: user.name, about: user.about, avatar: user.avatar, email: user.email, token,
+        });
     })
     .catch(next);
 };
@@ -115,4 +116,3 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch(next);
 };
-

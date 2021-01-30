@@ -1,4 +1,3 @@
-
 const cardsRouter = require('express').Router();
 const { validateCard, validateId } = require('../middlewares/requestValidation');
 const {

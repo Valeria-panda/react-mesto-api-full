@@ -5,7 +5,7 @@ function Register({ onRegister }){
     function submitForm(password, email) {
         onRegister(password, email);
       }
-    
+
 
     return(
         <AuthorizeForm

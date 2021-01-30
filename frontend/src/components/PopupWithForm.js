@@ -2,7 +2,7 @@ import React from 'react';
 import Form  from './Form';
 
 function PopupWithForm
-  ({ 
+  ({
     isOpen,
     formId,
     onSubmit,

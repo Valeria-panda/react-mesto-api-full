@@ -1,4 +1,3 @@
-
 export const apiOptions = {
   baseUrl: 'https://api.advent.students.nomoredomains.rocks/',
   headers: {
@@ -6,4 +5,3 @@ export const apiOptions = {
   },
   сredentials: 'include',
 };
-

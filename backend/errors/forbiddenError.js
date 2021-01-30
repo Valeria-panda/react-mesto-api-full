@@ -1,4 +1,3 @@
-
 class ForbiddenError extends Error {
   constructor(message, ...rest) {
     super(...rest);
@@ -6,5 +5,4 @@ class ForbiddenError extends Error {
     this.message = message;
   }
 }
-
 module.exports = ForbiddenError;
