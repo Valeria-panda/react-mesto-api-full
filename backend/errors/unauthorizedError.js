@@ -5,4 +5,5 @@ class UnauthorizedError extends Error {
     this.message = message;
   }
 }
+
 module.exports = UnauthorizedError;
