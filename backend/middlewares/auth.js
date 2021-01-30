@@ -8,6 +8,9 @@ module.exports = (req, res, next) => {
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
     console.log('Fuck!');
+    // return res
+    //   .status(404)
+    //   .send({ message: 'Не найдено' });
   }
 
   const token = authorization.replace('Bearer ', '');
