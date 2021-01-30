@@ -81,6 +81,7 @@ React.useEffect(() => {
     api
       .getUserInfo(token)
       .then((res) => {
+        console.log(token)
         console.log(res)
         setCurrentUser(res);
         console.log(currentUser)
@@ -224,6 +225,7 @@ function handleLogin(password, email) {
    function handleConfirm() {
     api
       .deleteCard(token, cardToDelete._id)
+      console.log(token)
       .then(() =>{
         setCards(cards.filter((item) => item !== cardToDelete))
         closeAllPopups();

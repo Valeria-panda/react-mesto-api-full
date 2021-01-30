@@ -68,13 +68,16 @@ app.use(errorLogger);
 app.use(errors());
 
 app.use((err, req, res, next) => {
-  if (err.status) {
-    res.status(err.status).send(err.message);
-    return;
+  const { statusCode, message } = err;
+
+  if (statusCode) {
+    return res.status(statusCode).send({ message });
   }
-  res.status(500).send({ message: `На сервере произошла ошибка: ${err.message}` });
-  next();
+
+  return next();
 });
+
+app.use((req, res) => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
