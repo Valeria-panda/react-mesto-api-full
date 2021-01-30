@@ -66,4 +66,3 @@ module.exports.dislikeCard = (req, res, next) => {
     .then((likes) => res.send(likes))
     .catch(next);
 };
-

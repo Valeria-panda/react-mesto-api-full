@@ -1,6 +1,6 @@
 const cors = require('cors');
 
-const { corsConfig } = require('./middlewares/cors');
+// const { corsConfig } = require('./middlewares/cors');
 
 require('dotenv').config();
 const express = require('express');
@@ -9,6 +9,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
+
+const { corsConfig } = require('./middlewares/cors');
+
 const users = require('./routes/users.js');
 const cards = require('./routes/cards.js');
 const auth = require('./middlewares/auth');
