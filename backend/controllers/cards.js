@@ -26,8 +26,7 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params._id)
-    .orFail()
-    .catch(() => {
+    .orFail(() => {
       throw new NotFoundError({ message: 'Нет карточки с таким id' });
     })
     .then((card) => {
@@ -47,8 +46,7 @@ module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(req.params._id,
     { $addToSet: { likes: req.user._id } },
     { new: true })
-    .orFail()
-    .catch(() => {
+    .orFail(() => {
       throw new NotFoundError({ message: 'Нет карточки с таким id' });
     })
     .then((likes) => res.send(likes))
@@ -59,8 +57,7 @@ module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(req.params._id,
     { $pull: { likes: req.user._id } },
     { new: true })
-    .orFail()
-    .catch(() => {
+    .orFail(() => {
       throw new NotFoundError({ message: 'Нет карточки с таким id' });
     })
     .then((likes) => res.send(likes))
