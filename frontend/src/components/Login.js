@@ -15,6 +15,8 @@ function Login({ onLogin }){
             onSubmit={submitForm}
             autoCompleteEmail='email'
             autoCompletePassword='current-password'
+            loginText="Eщe не зарегистрированны ?"
+            loginLink="Зарегистрироваться"
         />
     )
 }
